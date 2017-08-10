@@ -95,6 +95,20 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>${org.springframework.security-version}</version>
 		</dependency>
+		
+		<!-- SVN -->
+		<dependency>
+    		<groupId>org.tmatesoft.svnkit</groupId>
+    		<artifactId>svnkit</artifactId>
+    		<version>1.8.14</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.trilead</groupId>
+    		<artifactId>trilead-ssh2</artifactId>
+    		<version>1.0.0-build215</version>
+		</dependency>
+		
 		<!-- mobile -->
 		<dependency>
 			<groupId>org.springframework.mobile</groupId>
