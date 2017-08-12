@@ -40,6 +40,7 @@ public class SVNUtil implements VCUtil{
 	public void Init(Project pro) {
 		try {
 			this.path = svnPath + pro.getName();
+			System.out.println("path: " + this.path);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}

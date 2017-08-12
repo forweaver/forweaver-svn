@@ -206,6 +206,11 @@
 						<button id='project-ok' title='프로젝트 올리기' class="post-button btn btn-primary">
 							<i class="fa fa-check"></i>
 						</button>
+						<!-- SVN Test Code -->
+						<button id='project-ok' title='프로젝트 올리기(svn)' class="post-button btn btn-primary">
+							<i class="fa fa-check"></i>
+						</button>
+						<!-- ************** -->
 					</span>
 				</div>
 				<input value="0" id ="category" name="category" type="hidden"/> 	

@@ -23,6 +23,7 @@ import com.forweaver.mongodb.dao.ProjectDao;
 import com.forweaver.mongodb.dao.WaitJoinDao;
 import com.forweaver.mongodb.dao.WeaverDao;
 import com.forweaver.util.GitUtil;
+import com.forweaver.util.SVNUtil;
 
 /** 프로젝트 관리 서비스
  *
@@ -36,6 +37,7 @@ public class ProjectService{
 	@Autowired private WaitJoinDao waitJoinDao;
 	@Autowired private PostDao postDao;
 	@Autowired private GitUtil gitUtil;
+	@Autowired private SVNUtil svnUtil;
 
 	@Autowired @Qualifier("sessionRegistry")
 	private SessionRegistry sessionRegistry;
@@ -43,14 +45,29 @@ public class ProjectService{
 	 * @param project
 	 * @param currentWeaver
 	 */
+	//************ SVN Test Code ******************//
 	public void add(Project project,Weaver currentWeaver){
 		// TODO Auto-generated method stub
 		if(currentWeaver == null)
 			return;
 
-		gitUtil.Init(project);
+		System.out.println("<<weaver info>>");
+		System.out.println("id: " + currentWeaver.getId());
+		System.out.println("password: " + currentWeaver.getPassword());
+		System.out.println("username: " + currentWeaver.getUsername());
+		System.out.println("email: " + currentWeaver.getEmail());
 		
-		if(!gitUtil.createRepository())
+		System.out.println("<<project info>>");
+		System.out.println("Category: " + project.getCategory());
+		System.out.println("Category name: " + project.getCreatorName());
+		System.out.println("Category email: " + project.getCreatorEmail());
+		System.out.println("Category description : " + project.getDescription());
+		System.out.println("Category ChatRoom: " + project.getChatRoomName());
+		System.out.println("Category projectname: " + project.getName());
+		
+		svnUtil.Init(project);
+		
+		if(!svnUtil.createRepository())
 			return;
 
 		projectDao.insert(project);
@@ -58,6 +75,7 @@ public class ProjectService{
 		currentWeaver.addPass(pass);
 		weaverDao.updatePass(currentWeaver);
 	}
+	//**********************************************//
 
 	/** 회원 추가함.
 	 * @param project

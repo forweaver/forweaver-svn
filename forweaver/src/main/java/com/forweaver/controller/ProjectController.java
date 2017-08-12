@@ -149,6 +149,7 @@ public class ProjectController {
 		return "/project/projects";
 	}
 
+	//************ SVN Test Code ******************//
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(@RequestParam Map<String, String> params,Model model) {
 		Weaver currentWeaver = weaverService.getCurrentWeaver();
@@ -176,7 +177,7 @@ public class ProjectController {
 		projectService.add(project,currentWeaver);
 		return "redirect:/project/"+project.getName();
 	}
-
+	//**********************************************//
 
 	@RequestMapping("/{creatorName}/{projectName}/delete")
 	public String delete(Model model,
