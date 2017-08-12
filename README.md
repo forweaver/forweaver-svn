@@ -17,7 +17,7 @@
 <div>
 <h2><label># function test list</label></h2>
 <h3><label>* SVNKit Function List</label></h3>
-<li><make repository/li>
+<li><make repository</li>
 </div>
 <br>
 <h2><label># OpenSource Copyright</label></h2>
