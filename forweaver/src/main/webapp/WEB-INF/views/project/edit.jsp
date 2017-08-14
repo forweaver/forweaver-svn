@@ -104,9 +104,11 @@
 
 				<div class="span2">
 					<span>
+					<!-- SVN Test -->
 					<a  href="/project/${project.name}/delete" onclick="return confirm('정말로 프로젝트를 삭제하시겠습니까?')"
 						class="post-button btn btn-danger"  title="프로젝트를 삭제합니다!"> <i class="fa fa-remove"></i>
 					</a>
+					<!-- ********8 -->
 						<button onclick="confirm('정말 이대로 수정하시겠습니까?')" id='project-ok' class="post-button btn btn-primary" title="프로젝트 올리기">
 							<i class="fa fa-check"></i>
 						</button>

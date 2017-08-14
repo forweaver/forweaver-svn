@@ -116,7 +116,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>svnkit</servlet-name>
-		<url-pattern>/s/*</url-pattern> <!-- url로 들어오는 주소 -->
+		<url-pattern>/gg/*</url-pattern> <!-- url로 들어오는 주소 -->
 	</servlet-mapping>
 <error-page>
     <error-code>404</error-code>

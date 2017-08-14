@@ -51,7 +51,6 @@
 		$('#hide-content-button').show();
 		editorMode = true;
 	}
-
 	function hideProjectContent() {
 		$('#page-pagination').show();
 		$('#post-table').show();
@@ -70,7 +69,6 @@
 	}
 		$(document).ready(function() {
 			
-
 			hideProjectContent();
 			
 			$( "#"+getSort(document.location.href) ).addClass( "active" );
@@ -89,9 +87,7 @@
 								});
 								if (!exist)
 									movePage(tagNames+ ","+ tagname+" ","");
-
 							});
-
 					$( "#post-search-input" ).focus(function() {
 						var tags = $("#tags-input").val();
 						if(tags.length == 0){
@@ -115,12 +111,9 @@
 					            currentPage: ${pageIndex},
 					            totalPages: pageCount,
 					            pageUrl: function(type, page, current){
-
 					                return "${pageUrl}"+page;
-
 					            }
 					        }
-
 					        $('#page-pagination').bootstrapPaginator(options);
 				});
 	</script>
@@ -210,7 +203,7 @@
 						<button id='project-ok' title='프로젝트 올리기(svn)' class="post-button btn btn-primary">
 							<i class="fa fa-check"></i>
 						</button>
-						<!-- ************** -->
+						<!-- ************* -->
 					</span>
 				</div>
 				<input value="0" id ="category" name="category" type="hidden"/> 	

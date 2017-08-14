@@ -14,10 +14,10 @@ public class VCFileInfo implements Serializable {
 	static final long serialVersionUID = 39311473L;
 
 	private String name;
-	private String content;
-	private byte[] data;
+	private String content; //String 형 데이터//
+	private byte[] data; //byte[]형 데이터//
 	private List<VCSimpleCommitLog> commitLogList = new ArrayList<VCSimpleCommitLog>();
-	private int selectCommitIndex;
+	private int selectCommitIndex; //선택한 리비전값//
 	private boolean isDirectory;
 	private List<VCBlame> gitBlames = new ArrayList<VCBlame>();
 
@@ -27,8 +27,8 @@ public class VCFileInfo implements Serializable {
 
 	public VCFileInfo(String name, String content,byte[] data,
 			List<VCSimpleCommitLog> commitLogList,int selectCommitIndex,boolean isDirectory) {
-		this.name = name;
-		this.content = content;
+		this.name = name; //파일이름//
+		this.content = content; //파일내용//
 		this.data = data;
 		this.commitLogList = commitLogList;
 		this.selectCommitIndex = selectCommitIndex;

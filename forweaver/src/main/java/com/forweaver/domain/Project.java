@@ -28,6 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * adminWeavers 관리자들
  * joinWeavers 가입자들
  * </pre>
+ * 
  */
 @Document
 public class Project implements Serializable {

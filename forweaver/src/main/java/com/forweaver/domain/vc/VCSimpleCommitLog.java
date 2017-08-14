@@ -12,12 +12,12 @@ import org.eclipse.jgit.revwalk.RevCommit;
 public class VCSimpleCommitLog implements Serializable {
 
 	static final long serialVersionUID = 23434L;
-	
-	private String commitLogID;
-	private String shortMassage;
-	private String commiterName;
-	private String commiterEmail;
-	private Date commitDate;
+	//SVNUtil과 연동필요//
+	private String commitLogID; // repotreelist_revesion.add(entry.getRevision());
+	private String shortMassage; //listLog(repository);
+	private String commiterName; //entry.getAuthor()//
+	private String commiterEmail; //entry.getAuthor()
+	private Date commitDate; //repotreelist_date.add(entry.getDate().toString());//
 	private int commitDateInt;
 	
 	public VCSimpleCommitLog(String commitLogID, String shortMassage,

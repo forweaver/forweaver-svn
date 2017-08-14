@@ -24,5 +24,6 @@
 	</bean>
 	
 	<bean id="svnutil" class="com.forweaver.util.SVNUtil"></bean>
+	<bean id="svnservice" class="com.forweaver.service.SVNService"></bean>
 </beans>
 

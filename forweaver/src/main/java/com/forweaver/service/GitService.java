@@ -29,6 +29,8 @@ public class GitService {
 			filePath = filePath.substring(1);
 
 		VCFileInfo gitFileInfo = gitUtil.getFileInfo(commitID, filePath);
+		
+		
 		return gitFileInfo;
 	}
 

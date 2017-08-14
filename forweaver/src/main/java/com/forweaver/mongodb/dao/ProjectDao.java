@@ -27,9 +27,10 @@ public class ProjectDao {
 	 */
 	public void insert(Project project) {
 		
-		if (!mongoTemplate.collectionExists(Project.class)) {
+		//Mongo 2.x issue//
+		/*if (!mongoTemplate.collectionExists(Project.class)) {
 			mongoTemplate.createCollection(Project.class);
-		}
+		}*/
 		mongoTemplate.insert(project);
 	}
 	

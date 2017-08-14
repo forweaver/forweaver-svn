@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.tmatesoft.svn.core.SVNException;
@@ -20,10 +21,12 @@ import com.forweaver.domain.vc.VCSimpleFileInfo;
 
 public class SVNUtil implements VCUtil{
 	private String svnPath;
+	private String svnrepoPath;
 	private String path;
 
 	public SVNUtil(){
 		this.svnPath = "/Users/macbook/project/svn/"; //svn의 로컬주소(프로젝트 디폴드 주소) 설정//
+		this.svnrepoPath = "file:///Users/macbook/project/svn/"; //svn의 저장소 주소//
 	}
 	
 	public String getSvnPath() {
@@ -45,6 +48,25 @@ public class SVNUtil implements VCUtil{
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	/** 프로젝트 저장소 정보 설정 메서드
+	 * 
+	 * @param parentDirctoryName
+	 * @param repositoryName
+	 * @return
+	 */
+	public String RepoInit(String parentDirctoryName, String repositoryName) {
+		try {
+			this.svnrepoPath = svnrepoPath + parentDirctoryName + "/" + repositoryName;
+			System.out.println("repo path: " + this.svnrepoPath);
+			
+			return this.svnrepoPath;
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
+		return null;
+	}
 
 	public boolean createRepository() {
 		try {
@@ -60,12 +82,17 @@ public class SVNUtil implements VCUtil{
 	}
 
 	public boolean deleteRepository() {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			FileUtils.deleteDirectory(new File(this.path)); //파일제거//
+		}catch(Exception e) {
+			System.err.println(e.getMessage());
+			return false;
+		}
+		return true;
 	}
 
 	public boolean isDirectory(String commitID, String filePath) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 

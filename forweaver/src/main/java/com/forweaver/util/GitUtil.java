@@ -182,6 +182,7 @@ public class GitUtil implements VCUtil{
 	 * @return
 	 */
 	public VCFileInfo getFileInfo(String commitID, String filePath) {
+		//파일내용, 커밋로그 2가를 call//
 		List<VCSimpleCommitLog> commitLogList = new ArrayList<VCSimpleCommitLog>();
 		RevCommit selectCommit = this.getCommit(commitID);
 		int selectCommitIndex= 0;
@@ -199,7 +200,7 @@ public class GitUtil implements VCUtil{
 					break;
 
 		} finally {
-
+			//2가지 : 화면에 나타낼 내용
 			return new VCFileInfo(filePath, BlobUtils.getContent(
 					this.localRepo, selectCommit.getId(), filePath),
 					BlobUtils.getRawContent(this.localRepo, selectCommit.getId(), filePath),

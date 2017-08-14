@@ -1,0 +1,2 @@
+ WARN (DispatcherServlet.java[noHandlerFound]:1120) [2017-08-12 21:18:40,597] - No mapping found for HTTP request with URI [/chat/pub/seochangwook@svnproject_1/info] in DispatcherServlet with name 'springmvc'
+ WARN (DispatcherServlet.java[noHandlerFound]:1120) [2017-08-12 23:32:21,428] - No mapping found for HTTP request with URI [/project/tags:%E3%84%B7%E3%85%85%E3%84%B7%E3%84%B4] in DispatcherServlet with name 'springmvc'

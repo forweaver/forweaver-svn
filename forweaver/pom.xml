@@ -95,20 +95,6 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>${org.springframework.security-version}</version>
 		</dependency>
-		
-		<!-- SVN -->
-		<dependency>
-    		<groupId>org.tmatesoft.svnkit</groupId>
-    		<artifactId>svnkit</artifactId>
-    		<version>1.8.14</version>
-		</dependency>
-		
-		<dependency>
-    		<groupId>com.trilead</groupId>
-    		<artifactId>trilead-ssh2</artifactId>
-    		<version>1.0.0-build215</version>
-		</dependency>
-		
 		<!-- mobile -->
 		<dependency>
 			<groupId>org.springframework.mobile</groupId>
@@ -153,8 +139,22 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			    <version>2.5</version>
+			<version>2.4</version>
 		</dependency>
+		
+		<!-- SVN -->
+		<dependency>
+    		<groupId>org.tmatesoft.svnkit</groupId>
+    		<artifactId>svnkit</artifactId>
+    		<version>1.8.14</version>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.trilead</groupId>
+    		<artifactId>trilead-ssh2</artifactId>
+    		<version>1.0.0-build215</version>
+		</dependency>
+		
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -235,7 +235,7 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -244,12 +244,12 @@
 		<dependency>
 			<groupId>org.gitective</groupId>
 			<artifactId>gitective-core</artifactId>
-			<version>0.9.9</version>
+			<version>0.9.11</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
+			<version>1.2.1</version> <!-- makesure correct version here -->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -290,7 +290,11 @@
 			<version>0.13</version>
 		</dependency>
 		<!-- log4jwebtracker -->
-		
+		<dependency>
+			<groupId>log4jwebtracker</groupId>
+			<artifactId>log4jwebtracker</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -321,6 +325,10 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<id>log4jwebtracker-releases</id>
+			<url>http://repo.log4jwebtracker.com/maven2</url>
 		</repository>
 	</repositories>
 </project>

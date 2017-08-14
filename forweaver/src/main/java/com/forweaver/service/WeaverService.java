@@ -35,6 +35,7 @@ import com.forweaver.domain.Weaver;
 import com.forweaver.mongodb.dao.WeaverDao;
 import com.forweaver.util.GitUtil;
 import com.forweaver.util.MailUtil;
+import com.forweaver.util.SVNUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -54,6 +55,8 @@ public class WeaverService implements UserDetailsService {
 	private MailUtil mailUtil;
 	@Autowired 
 	private GitUtil gitUtil;
+	@Autowired 
+	private SVNUtil svnUtil;
 
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
@@ -79,6 +82,7 @@ public class WeaverService implements UserDetailsService {
 
 	public Weaver getCurrentWeaver() {
 		// TODO Auto-generated method stub
+		//세션값을 물고온다.//
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
 		if (auth.getName().equals("anonymousUser"))
@@ -92,6 +96,7 @@ public class WeaverService implements UserDetailsService {
 		return details.getRemoteAddress();
 	}
 
+	//************ SVN Test Code ******************//
 	public void add(Weaver weaver) { // 회원 추가 서비스
 		Pass pass;
 		if(weaverDao.existsWeaver())
@@ -101,9 +106,16 @@ public class WeaverService implements UserDetailsService {
 		weaver.addPass(pass);
 		weaver.setPassword(passwordEncoder.encodePassword(weaver.getPassword(), null));
 		weaverDao.insert(weaver);
-		File file = new File(gitUtil.getGitPath() + weaver.getId());
+		//해당 파일의 경로를 GIT/SVN 으로 분리 필요//
+		//File file = new File(gitUtil.getGitPath() + weaver.getId());
+		System.out.println("********************************");
+		System.out.println("create file path: " + svnUtil.getSvnPath() + weaver.getId());
+		System.out.println("********************************");
+		
+		File file = new File(svnUtil.getSvnPath() + weaver.getId());
 		file.mkdir();
 	}
+	//**********************************************//
 
 	public void update(Weaver weaver,String password,String newpassword,List<String> tags,String studentID,String say,MultipartFile image) { // 회원 수정
 		// TODO Auto-generated method stub

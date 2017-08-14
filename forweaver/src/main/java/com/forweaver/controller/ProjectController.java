@@ -38,6 +38,7 @@ import com.forweaver.service.GitService;
 import com.forweaver.service.PostService;
 import com.forweaver.service.ProjectService;
 import com.forweaver.service.RePostService;
+import com.forweaver.service.SVNService;
 import com.forweaver.service.TagService;
 import com.forweaver.service.WaitJoinService;
 import com.forweaver.service.WeaverService;
@@ -61,6 +62,8 @@ public class ProjectController {
 	private TagService tagService;
 	@Autowired 
 	private DataService dataService;
+	@Autowired
+	private SVNService svnService;
 
 	@RequestMapping("/")
 	public String projects() {
@@ -98,6 +101,9 @@ public class ProjectController {
 		model.addAttribute("pageIndex", pageNum);
 		model.addAttribute("number", size);
 		model.addAttribute("pageUrl", "/project/sort:"+sort+"/page:");
+		
+		System.out.println("project count: " + projectService.countProjects(currentWeaver,null, "", sort));
+		
 		return "/project/projects";
 	}
 
@@ -123,6 +129,7 @@ public class ProjectController {
 		model.addAttribute("pageIndex", pageNum);
 		model.addAttribute("number", size);
 		model.addAttribute("pageUrl", "/project/tags:"+tagNames+"/sort:"+sort+"/page:");
+		
 		return "/project/projects";
 	}
 
@@ -152,6 +159,7 @@ public class ProjectController {
 	//************ SVN Test Code ******************//
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String add(@RequestParam Map<String, String> params,Model model) {
+		//현재 접속자 설정//
 		Weaver currentWeaver = weaverService.getCurrentWeaver();
 		List<String> tagList = tagService.stringToTagList(params.get("tags"));
 		int categoryInt = 0;
@@ -168,17 +176,22 @@ public class ProjectController {
 			return "/alert";
 		}
 
+		//프로젝트 설정//
 		Project project = new Project(params.get("name"), 
 				categoryInt, 
 				params.get("description"), 
 				currentWeaver,
 				tagList);
 
-		projectService.add(project,currentWeaver);
+		//등록할 프로젝트와 해당 사용자정보를 서비스로 넘김//
+		projectService.add(project, currentWeaver);
+		
+		//완료 후 해당 프로젝트 화면으로 다시 돌아감.//
 		return "redirect:/project/"+project.getName();
 	}
 	//**********************************************//
 
+	//************ SVN Test Code ******************//
 	@RequestMapping("/{creatorName}/{projectName}/delete")
 	public String delete(Model model,
 			@PathVariable("creatorName") String creatorName,
@@ -188,6 +201,7 @@ public class ProjectController {
 		List<String> tags = new ArrayList<String>();
 		tags.add("@"+project.getName());
 		
+		//프로젝트를 제거//
 		if(projectService.delete(currentWeaver, project))
 			for(Post post:postService.getPosts(tags, null, null, "", 1, Integer.MAX_VALUE)) // 프로젝트에 쓴 글 모두 삭제
 				postService.delete(post);
@@ -200,7 +214,7 @@ public class ProjectController {
 
 		return "redirect:/project/";
 	}
-
+	//**********************************************//
 
 	@RequestMapping(value = {"/{creatorName}/{projectName}/data/commit:{commit}/**"})
 	public void data(HttpServletRequest request,@PathVariable("projectName") String projectName,
@@ -249,6 +263,7 @@ public class ProjectController {
 		return "redirect:"+request.getRequestURI()+"/filepath:/"; 
 	}
 
+	//************ SVN Test Code ******************//
 	@RequestMapping("/{creatorName}/{projectName}/browser/commit:{commit}/**")
 	public String fileBrowser(HttpServletRequest request,@PathVariable("projectName") String projectName,
 			@PathVariable("creatorName") String creatorName,
@@ -256,15 +271,22 @@ public class ProjectController {
 		Project project = projectService.get(creatorName+"/"+projectName);
 		String uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
 		String filePath = uri.substring(uri.indexOf("filepath:")+9);
+		
+		System.out.println("********************************");
+		System.out.println("uri: " + uri);
+		
 		filePath = filePath.replace(",jsp", ".jsp");
-
+		System.out.println("filepath: " + filePath);
+		
 		commit = uri.substring(uri.indexOf("/commit:")+8);
 		commit = commit.substring(0, commit.indexOf("/"));
+		System.out.println("commit: " + commit);
+		System.out.println("********************************");
+		
+		//파일의 리스트 정보를 불러온다.//
+		VCFileInfo svnFileInfo = svnService.getFileInfo(creatorName, projectName, commit, filePath);
 
-		VCFileInfo gitFileInfo = gitService.getFileInfo(creatorName, projectName, commit, filePath);
-
-
-		if(gitFileInfo ==null || gitFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
+		/*if(gitFileInfo ==null || gitFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
 			List<VCSimpleFileInfo> gitFileInfoList = 
 					gitService.getGitSimpleFileInfoList(creatorName, projectName,commit,filePath);
 
@@ -295,9 +317,9 @@ public class ProjectController {
 			model.addAttribute("isCodeName",WebUtil.isCodeName(filePath));
 			model.addAttribute("isImageName",WebUtil.isImageName(filePath));
 			return "/project/fileViewer";
-		}
-
-
+		}*/
+		return "/project/fileViewer";
+		//**********************************************//
 	}
 
 	@RequestMapping("/{creatorName}/{projectName}/edit/commit:{commit}/**")

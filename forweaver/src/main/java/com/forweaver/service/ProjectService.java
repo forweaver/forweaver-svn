@@ -50,31 +50,34 @@ public class ProjectService{
 		// TODO Auto-generated method stub
 		if(currentWeaver == null)
 			return;
-
-		System.out.println("<<weaver info>>");
-		System.out.println("id: " + currentWeaver.getId());
-		System.out.println("password: " + currentWeaver.getPassword());
-		System.out.println("username: " + currentWeaver.getUsername());
-		System.out.println("email: " + currentWeaver.getEmail());
-		
-		System.out.println("<<project info>>");
-		System.out.println("Category: " + project.getCategory());
-		System.out.println("Category name: " + project.getCreatorName());
-		System.out.println("Category email: " + project.getCreatorEmail());
-		System.out.println("Category description : " + project.getDescription());
-		System.out.println("Category ChatRoom: " + project.getChatRoomName());
-		System.out.println("Category projectname: " + project.getName());
-		
-		svnUtil.Init(project);
-		
-		if(!svnUtil.createRepository())
+		try{
+			System.out.println("******************************");
+			System.out.println("<<weaver info>>");
+			System.out.println("id: " + currentWeaver.getId());
+			System.out.println("password: " + currentWeaver.getPassword());
+			System.out.println("username: " + currentWeaver.getUsername());
+			System.out.println("email: " + currentWeaver.getEmail());
+			
+			System.out.println("<<project info>>");
+			System.out.println("Category: " + project.getCategory());
+			System.out.println("Category name: " + project.getCreatorName());
+			System.out.println("Category email: " + project.getCreatorEmail());
+			System.out.println("Category description : " + project.getDescription());
+			System.out.println("Category ChatRoom: " + project.getChatRoomName());
+			System.out.println("Category projectname: " + project.getName());
+			System.out.println("******************************");
+			
+			svnUtil.Init(project);
+			svnUtil.createRepository();
+		} catch (Exception e) {
 			return;
-
+		}
 		projectDao.insert(project);
 		Pass pass = new Pass(project.getName(),2);
 		currentWeaver.addPass(pass);
 		weaverDao.updatePass(currentWeaver);
 	}
+	
 	//**********************************************//
 
 	/** 회원 추가함.
@@ -106,16 +109,36 @@ public class ProjectService{
 		return projectDao.get(projectName);
 	}
 
-
+	//************ SVN Test Code ******************//
 	public boolean delete(Weaver weaver,Project project){
+		System.out.println("******************************");
+		System.out.println("<<weaver info>>");
+		System.out.println("id: " + weaver.getId());
+		System.out.println("password: " + weaver.getPassword());
+		System.out.println("username: " + weaver.getUsername());
+		System.out.println("email: " + weaver.getEmail());
+		
+		System.out.println("<<project info>>");
+		System.out.println("Category: " + project.getCategory());
+		System.out.println("Category name: " + project.getCreatorName());
+		System.out.println("Category email: " + project.getCreatorEmail());
+		System.out.println("Category description : " + project.getDescription());
+		System.out.println("Category ChatRoom: " + project.getChatRoomName());
+		System.out.println("Category projectname: " + project.getName());
+		System.out.println("******************************");
+		
 		// TODO Auto-generated method stub
-		if(weaver == null || project == null)
+		//프로젝트가 존재하는지 여부를 검사//
+		if(weaver == null || project == null){
+			System.out.println("weaver is null and project null");
 			return false;
+		}
+		
+		//현재 지울려는 사람이 해당 프로젝트에 관리자인지 확인//
 		if(weaver.isAdmin() || weaver.equals(project.getCreator())){
-
-
-			gitUtil.Init(project);
-			if(!gitUtil.deleteRepository())
+			System.out.println("admin user");
+			svnUtil.Init(project);
+			if(!svnUtil.deleteRepository())
 				return false;
 
 			for(Weaver joinWeaver:project.getJoinWeavers()){
@@ -135,13 +158,13 @@ public class ProjectService{
 
 			project.getCreator().deletePass(project.getName());
 			weaverDao.updatePass(project.getCreator());
-			projectDao.delete(project);
+			projectDao.delete(project); //몽고디비의 프로젝트 제거//
 			return true;
 		}
+		
 		return false;
-
 	}
-
+	//**********************************************//
 
 	public boolean deleteWeaver(Project project, Weaver currentWeaver,Weaver deleteWeaver) {
 		// 프로젝트에 동료를 탈퇴시킴
