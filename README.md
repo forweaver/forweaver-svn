@@ -1,4 +1,4 @@
-#Forweaver-svn (ver 0.1)
+<h1>Forweaver-svn (ver 0.1)</h1>
 <div>
 <h1><label>$ Forweaver for SVN</h1></label>
 </div>
@@ -22,6 +22,10 @@
 <li>repository file list view -> developing
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/fixicon.png" width="30" height="30">
 </li>
+</div>
+<div>
+<h2><label># Issue, Milestone</label></h2>
+<li>Integrated management using Github</li>
 </div>
 <br>
 <h2><label># OpenSource Copyright</label></h2>
