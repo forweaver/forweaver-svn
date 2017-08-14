@@ -19,7 +19,9 @@
 <h3><label>* SVNKit Function List</label></h3>
 <li>make repository</li>
 <li>remove repository</li>
-<li>repository file list view - developing</li>
+<li>repository file list view - developing
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/fixicon.png" width="30" height="30">
+</li>
 </div>
 <br>
 <h2><label># OpenSource Copyright</label></h2>
