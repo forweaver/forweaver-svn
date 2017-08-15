@@ -253,9 +253,9 @@ public class GitUtil implements VCUtil{
 	 * @param filePath
 	 * @return
 	 */
-	public List<VCSimpleFileInfo> getGitFileInfoList(String commitID,String filePath) {
+	public List<VCSimpleFileInfo> getVCFileInfoList(String commitID,String filePath) {
 		List<VCSimpleFileInfo> gitFileInfoList = new ArrayList<VCSimpleFileInfo>();
-		List<String> fileList = this.getGitFileList(commitID);
+		List<String> fileList = this.getVCFileList(commitID);
 		try{			
 			for(String path: WebUtil.getFileList(fileList, "/"+filePath)){
 				RevCommit revCommit = CommitUtils.getLastCommit(this.localRepo,
@@ -279,7 +279,7 @@ public class GitUtil implements VCUtil{
 	 * @param commitID
 	 * @return
 	 */
-	public List<String> getGitFileList(String commitID) {
+	public List<String> getVCFileList(String commitID) {
 		List<String> fileList = new ArrayList<String>();
 		try{
 			ObjectId revId = this.localRepo.resolve(commitID);
@@ -495,7 +495,7 @@ public class GitUtil implements VCUtil{
 				git.checkout().setName(branchName).call();
 			}
 
-			for(String fileName:getGitFileList(branchName))
+			for(String fileName:getVCFileList(branchName))
 				git.rm().addFilepattern(fileName.substring(1)).call();	
 
 			WebUtil.unZip(directoryPath+".zip", directoryPath,WebUtil.isOneDirectory(directoryPath+".zip"));
@@ -613,7 +613,7 @@ public class GitUtil implements VCUtil{
 					existBranch = true;
 
 			if(!existBranch) // 새로 브랜치를 만들었다면 다 지움
-				for(String fileName:getGitFileList(branchName))
+				for(String fileName:getVCFileList(branchName))
 					git.rm().addFilepattern(fileName.substring(1)).call();	
 
 			WebUtil.multipartFileToTempFile(directoryPath+path+"/"+file.getOriginalFilename(), file);

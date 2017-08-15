@@ -30,7 +30,6 @@ public class GitService {
 
 		VCFileInfo gitFileInfo = gitUtil.getFileInfo(commitID, filePath);
 		
-		
 		return gitFileInfo;
 	}
 
@@ -83,7 +82,7 @@ public class GitService {
 		else
 			filePath = filePath.substring(1);
 
-		List<VCSimpleFileInfo> gitFileInfoList = gitUtil.getGitFileInfoList(commitID,filePath);
+		List<VCSimpleFileInfo> gitFileInfoList = gitUtil.getVCFileInfoList(commitID,filePath);
 		return gitFileInfoList;
 	}
 

@@ -53,13 +53,13 @@ public interface VCUtil {
 	 * @param filePath
 	 * @return
 	 */
-	public List<VCSimpleFileInfo> getGitFileInfoList(String commitID,String filePath);
+	public List<VCSimpleFileInfo> getVCFileInfoList(String commitID,String filePath);
 
 	/** 프로젝트의 파일 목록을 커밋 아이디를 가지고 가져옴.
 	 * @param commitID
 	 * @return
 	 */
-	public List<String> getGitFileList(String commitID);
+	public List<String> getVCFileList(String commitID);
 
 	/** 저장소에서 GIT 로그 정보를 가져옴
 	 * @param commitID

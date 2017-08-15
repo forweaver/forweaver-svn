@@ -30,6 +30,16 @@ public class VCSimpleCommitLog implements Serializable {
 		this.commitDate = new Date(commitDate*1000L);
 	}
 	
+	public VCSimpleCommitLog(String commitLogID, String shortMassage,
+			String commiterName, String commiterEmail,
+			Date commitDate) {
+		this.commitLogID = commitLogID;
+		this.shortMassage = shortMassage;
+		this.commiterName = commiterName;
+		this.commiterEmail = commiterEmail;
+		this.commitDate = commitDate;
+	}
+	
 	public VCSimpleCommitLog(RevCommit revCommit){
 		if(revCommit == null)
 			return;

@@ -5,7 +5,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.io.SVNRepository;
+import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 
+import com.forweaver.domain.Weaver;
 import com.forweaver.domain.git.statistics.GitParentStatistics;
 import com.forweaver.domain.vc.VCCommitLog;
 import com.forweaver.domain.vc.VCFileInfo;
@@ -17,6 +24,8 @@ import com.forweaver.util.SVNUtil;
 public class SVNService implements VCService{
 	@Autowired
 	SVNUtil svnUtil;
+	@Autowired
+	WeaverService weaverService;
 	
 	public VCFileInfo getFileInfo(String parentDirctoryName, String repositoryName, String commitID, String filePath) {
 		System.out.println("*****************************");
@@ -24,11 +33,46 @@ public class SVNService implements VCService{
 		System.out.println("repositoryName: " + repositoryName);
 		System.out.println("commitID: " + commitID);
 		System.out.println("filePath: " + filePath);
+	
+		//사용자 정보 출력(세션)//
+		Weaver weaver = weaverService.getCurrentWeaver();
+		System.out.println("==================");
+		System.out.println("* Session id: " + weaver.getUsername());
+		System.out.println("* Session password: " + weaver.getPassword());
+		System.out.println("==================");
 		
-		String repopath = svnUtil.RepoInit(parentDirctoryName, repositoryName);
-		System.out.println("repopath: " + repopath);
+		//프로젝트 초기화//
+		svnUtil.RepoInt(parentDirctoryName, repositoryName);
 		
-		//저장소 정보를 출력//
+		try {
+			/*//인증정보를 설정//
+			ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(userid, userpassword);
+	        repository.setAuthenticationManager(authManager);
+	        
+	        System.out.println("Auth Check Success...");*/
+			
+			String repoUUID = svnUtil.getRepository().getRepositoryUUID(true).toString();
+			String reporevesion = ""+svnUtil.getRepository().getLatestRevision();
+			String repoRoot = svnUtil.getRepository().getRepositoryRoot(true).toString();
+			String repoURL = svnUtil.getRepository().getLocation().toString();
+			
+			System.out.println("repoUUID: " + repoUUID);
+			System.out.println("reporevesion: " + reporevesion);
+			System.out.println("repoRoot: " + repoRoot);
+			System.out.println("repoURL: " + repoURL);
+			
+			//commitID가 Long으로 들어온다는 가정//
+			commitID = "-1";
+			//svnUtil.isDirectory(commitID, filePath);
+			//저장소 리스트를 출력//
+			VCFileInfo gitFileInfo = svnUtil.getFileInfo(commitID, filePath);
+			
+			return gitFileInfo;
+			
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.out.println("*****************************");
 		

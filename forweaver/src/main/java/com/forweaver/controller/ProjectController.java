@@ -42,6 +42,7 @@ import com.forweaver.service.SVNService;
 import com.forweaver.service.TagService;
 import com.forweaver.service.WaitJoinService;
 import com.forweaver.service.WeaverService;
+import com.forweaver.util.SVNUtil;
 import com.forweaver.util.WebUtil;
 
 @Controller
@@ -64,6 +65,8 @@ public class ProjectController {
 	private DataService dataService;
 	@Autowired
 	private SVNService svnService;
+	@Autowired
+	private SVNUtil svnUtil;
 
 	@RequestMapping("/")
 	public String projects() {
@@ -274,6 +277,7 @@ public class ProjectController {
 		
 		System.out.println("********************************");
 		System.out.println("uri: " + uri);
+		System.out.println("project name: " + project.getName());
 		
 		filePath = filePath.replace(",jsp", ".jsp");
 		System.out.println("filepath: " + filePath);
@@ -283,10 +287,31 @@ public class ProjectController {
 		System.out.println("commit: " + commit);
 		System.out.println("********************************");
 		
+		//프로젝트 path초기화//
+		svnUtil.Init(project);
+		
 		//파일의 리스트 정보를 불러온다.//
 		VCFileInfo svnFileInfo = svnService.getFileInfo(creatorName, projectName, commit, filePath);
+		
+		System.out.println("-------file info--------");
+		System.out.println("revesion: " + svnFileInfo.getSelectCommitIndex());
+		System.out.println("name: " + svnFileInfo.getName());
+		System.out.println("is directory: " + svnFileInfo.isDirectory());
+		System.out.println("content: " + svnFileInfo.getContent());
+		
+		int size = svnFileInfo.getCommitLogList().size();
+		
+		for(int i=1; i<size; i++){
+			System.out.println("["+i+"] revesion: " + svnFileInfo.getCommitLogList().get(i).getCommitLogID());
+			System.out.println("["+i+"] message: " + svnFileInfo.getCommitLogList().get(i).getShortMassage());
+			System.out.println("["+i+"] author: " + svnFileInfo.getCommitLogList().get(i).getCommiterName());
+			System.out.println("["+i+"] email: " + svnFileInfo.getCommitLogList().get(i).getCommiterEmail());
+			System.out.println("["+i+"] date: " + svnFileInfo.getCommitLogList().get(i).getCommitDate());
+			System.out.println("--");
+		}
+		System.out.println("------------------------");
 
-		/*if(gitFileInfo ==null || gitFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
+		/*if(svnFileInfo ==null || svnFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
 			List<VCSimpleFileInfo> gitFileInfoList = 
 					gitService.getGitSimpleFileInfoList(creatorName, projectName,commit,filePath);
 
@@ -305,21 +330,21 @@ public class ProjectController {
 			return "/project/browser";
 		}else{ // 파일이라면
 			model.addAttribute("project", project);
-			model.addAttribute("fileName", gitFileInfo.getName());
-			if(!WebUtil.isCodeName(gitFileInfo.getName()))
-				gitFileInfo.setContent("이 파일은 화면에 표시할 수 없습니다!");
-			if(gitFileInfo.getContent() != null)
-				model.addAttribute("fileContent", new String(gitFileInfo.getContent().getBytes(Charset.forName("EUC-KR")),Charset.forName("CP949")));
-			model.addAttribute("gitLogList", gitFileInfo.getCommitLogList());
-			model.addAttribute("selectCommitIndex", gitFileInfo.getSelectCommitIndex());
-			model.addAttribute("gitCommitLog",gitFileInfo.getSelectCommitLog());
+			model.addAttribute("fileName", svnFileInfo.getName());
+			if(!WebUtil.isCodeName(svnFileInfo.getName()))
+				svnFileInfo.setContent("이 파일은 화면에 표시할 수 없습니다!");
+			if(svnFileInfo.getContent() != null)
+				model.addAttribute("fileContent", new String(svnFileInfo.getContent().getBytes(Charset.forName("EUC-KR")),Charset.forName("CP949")));
+			model.addAttribute("gitLogList", svnFileInfo.getCommitLogList());
+			model.addAttribute("selectCommitIndex", svnFileInfo.getSelectCommitIndex());
+			model.addAttribute("gitCommitLog",svnFileInfo.getSelectCommitLog());
 			model.addAttribute("filePath",filePath);
 			model.addAttribute("isCodeName",WebUtil.isCodeName(filePath));
 			model.addAttribute("isImageName",WebUtil.isImageName(filePath));
 			return "/project/fileViewer";
 		}*/
-		return "/project/fileViewer";
-		//**********************************************//
+		
+		return "/project/browser";
 	}
 
 	@RequestMapping("/{creatorName}/{projectName}/edit/commit:{commit}/**")
