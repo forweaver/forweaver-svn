@@ -19,6 +19,7 @@
 <h3><label>* SVNKit Function List</label></h3>
 <li>make repository</li>
 <li>remove repository</li>
+<li>Directory Check</li>
 <li>repository file list view -> developing
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/fixicon.png" width="30" height="30">
 </li>
