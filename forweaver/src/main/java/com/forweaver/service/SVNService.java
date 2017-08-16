@@ -102,8 +102,26 @@ public class SVNService implements VCService{
 
 	public List<VCSimpleFileInfo> getVCSimpleFileInfoList(String parentDirctoryName, String repositoryName,
 			String commitID, String filePath) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("*****************************");
+		System.out.println("parentDirctoryName: " + parentDirctoryName);
+		System.out.println("repositoryName: " + repositoryName);
+		System.out.println("commitID: " + commitID);
+		System.out.println("filePath: " + filePath);
+	
+		//사용자 정보 출력(세션)//
+		Weaver weaver = weaverService.getCurrentWeaver();
+		System.out.println("==================");
+		System.out.println("* Session id: " + weaver.getUsername());
+		System.out.println("* Session password: " + weaver.getPassword());
+		System.out.println("==================");
+		
+		//프로젝트 초기화//
+		svnUtil.RepoInt(parentDirctoryName, repositoryName);
+		
+		//파일의 내용을 불러온다.//
+		List<VCSimpleFileInfo> svnFileInfoList = svnUtil.getVCFileInfoList(commitID,filePath);
+		
+		return svnFileInfoList;
 	}
 
 	public List<VCSimpleCommitLog> getVCCommitLogList(String parentDirctoryName, String repositoryName,
@@ -139,9 +157,19 @@ public class SVNService implements VCService{
 	}
 
 	public String getReadme(String creatorName, String projectName, String commit,
-			List<VCSimpleFileInfo> gitFileInfoList) {
-		// TODO Auto-generated method stub
-		return null;
+			List<VCSimpleFileInfo> svnFileInfoList) {
+		String readme = "";
+		if(svnFileInfoList != null) 
+			for(VCSimpleFileInfo svnSimpleFileInfo:svnFileInfoList)// 파일들을 검색해서 리드미 파일을 찾아냄
+				if(svnSimpleFileInfo.getName().toUpperCase().contains("README.md"))
+					readme = getFileInfo(
+							creatorName, 
+							projectName, 
+							commit, 
+							"/"+svnSimpleFileInfo.getName()).getContent();
+		
+		System.out.println("readme info: " + readme);
+		return readme;
 	}
 
 }

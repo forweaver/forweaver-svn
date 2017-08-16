@@ -311,19 +311,23 @@ public class ProjectController {
 		}
 		System.out.println("------------------------");
 
-		/*if(svnFileInfo ==null || svnFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
-			List<VCSimpleFileInfo> gitFileInfoList = 
-					gitService.getGitSimpleFileInfoList(creatorName, projectName,commit,filePath);
+		if(svnFileInfo ==null || svnFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
+			//디렉터리이기에 파일내용은 필요없는 VCSimpleFileInfo를 생성//
+			commit = "-1";
+			
+			List<VCSimpleFileInfo> svnFileInfoList = 
+					svnService.getVCSimpleFileInfoList(creatorName, projectName,commit,filePath);
 
-			List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
-			gitBranchList.remove(commit);
+			/*List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
+			gitBranchList.remove(commit);*/
 
 			model.addAttribute("project", project);
-			model.addAttribute("gitFileInfoList", gitFileInfoList);
+			model.addAttribute("gitFileInfoList", svnFileInfoList);
 
-			model.addAttribute("gitBranchList", gitBranchList);
-			model.addAttribute("selectBranch",commit);
-			model.addAttribute("readme",gitService.getReadme(creatorName, projectName,commit,gitFileInfoList));
+			model.addAttribute("gitBranchList",null);
+			model.addAttribute("selectBranch",null);
+			//README.md의 파일내용을 불러온다.(현재는 하드코딩)//
+			model.addAttribute("readme","README.md file content view");
 			model.addAttribute("filePath",filePath);
 			model.addAttribute("commit",commit);
 
@@ -342,9 +346,9 @@ public class ProjectController {
 			model.addAttribute("isCodeName",WebUtil.isCodeName(filePath));
 			model.addAttribute("isImageName",WebUtil.isImageName(filePath));
 			return "/project/fileViewer";
-		}*/
+		}
 		
-		return "/project/browser";
+		//return "/project/browser";
 	}
 
 	@RequestMapping("/{creatorName}/{projectName}/edit/commit:{commit}/**")
@@ -922,6 +926,7 @@ public class ProjectController {
 		return "redirect:/project/";
 	}
 
+	//**SVN Test Code**//
 	// 프로젝트 정보 불러오기
 	@RequestMapping("/{creatorName}/{projectName}/info")
 	public String info(@PathVariable("projectName") String projectName,
@@ -931,6 +936,7 @@ public class ProjectController {
 		model.addAttribute("gitInfo", gitService.getGitInfo(creatorName, projectName, "HEAD"));
 		return "/project/info";
 	}
+	//******************//
 
 	// 프로젝트 스트림 시각화
 	@RequestMapping("/{creatorName}/{projectName}/info:stream")

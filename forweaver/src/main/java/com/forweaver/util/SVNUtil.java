@@ -148,11 +148,6 @@ public class SVNUtil implements VCUtil{
                 	
                 	return false;
                 }
-                
-                /*//재귀적으로 호출 시 하위구조의 정보까지 출력된다.//
-                if (entry.getKind() == SVNNodeKind.DIR) {
-                	isDirectory(commitID, (filePath.equals("")) ? entry.getName() : filePath + "/" + entry.getName());
-                }*/
             }
         } catch(SVNException e){
         	e.printStackTrace();
@@ -170,25 +165,6 @@ public class SVNUtil implements VCUtil{
 	 * @param filePath
 	 * @return
 	 */
-	/*commitLogList.add(new VCSimpleCommitLog(revCommit));*/
-	/*public VCFileInfo(String name, String content,byte[] data,
-			List<VCSimpleCommitLog> commitLogList,int selectCommitIndex,boolean isDirectory) {
-		this.name = name; //파일이름//
-		this.content = content; //파일내용//
-		this.data = data;
-		this.commitLogList = commitLogList;
-		this.selectCommitIndex = selectCommitIndex;
-		this.isDirectory = isDirectory;
-	}*/
-	/*public VCSimpleCommitLog(String commitLogID, String shortMassage,
-			String commiterName, String commiterEmail,
-			int commitDate) {
-		this.commitLogID = commitLogID;
-		this.shortMassage = shortMassage;
-		this.commiterName = commiterName;
-		this.commiterEmail = commiterEmail;
-		this.commitDate = new Date(commitDate*1000L);
-	}*/
 	@SuppressWarnings("finally")
 	public VCFileInfo getFileInfo(String commitID, String filePath) {
 		System.out.println("*****************************");
@@ -257,6 +233,11 @@ public class SVNUtil implements VCUtil{
 		}
 	}
 	
+	/** 파일내용 String으로 출력
+	 * 
+	 * @param filename
+	 * @return
+	 */
 	public String doPrintFileStringcontent(String filename){
 		String filecontent = "";
 		
@@ -325,6 +306,11 @@ public class SVNUtil implements VCUtil{
 		return filecontent;
 	}
 	
+	/** 파일내용 byte[]로 출력
+	 * 
+	 * @param filename
+	 * @return
+	 */
 	public byte[] doPrintFileBytecontent(String filename){
 		byte[] content = null;
 		System.out.println("file content view");
@@ -402,10 +388,60 @@ public class SVNUtil implements VCUtil{
 		return 0;
 	}
 
+	// 디렉터리일 경우 정보 리스트
 	public List<VCSimpleFileInfo> getVCFileInfoList(String commitID, String filePath) {
-		// TODO Auto-generated method stub
-		return null;
+		List<VCSimpleFileInfo> svnFileInfoList = new ArrayList<VCSimpleFileInfo>();
+	
+		SVNRepository repository = this.repository;
+		
+		try {
+			svnFileInfoList = listEntries(repository, filePath, commitID); //파일내의 정보를 불러온다.//
+			
+			System.out.println("list size: " + svnFileInfoList.size());
+			
+			for(int i=0; i<svnFileInfoList.size(); i++){
+				System.out.println("info: " + svnFileInfoList.get(i).getName());
+			}
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return svnFileInfoList;
 	}
+	
+	//파일 리스트 정보를 가져온다.//
+	public List<VCSimpleFileInfo> listEntries(SVNRepository repository, String path, String commitID) throws SVNException {
+		List<VCSimpleFileInfo> svnFileInfoList = new ArrayList<VCSimpleFileInfo>();
+		
+        try
+        {
+        	Collection entries = repository.getDir(path, -1, null, (Collection) null);
+        	
+            Iterator iterator = entries.iterator();
+            
+        	while (iterator.hasNext()) {
+                SVNDirEntry entry = (SVNDirEntry) iterator.next();
+                
+                //디렉터리 출력 형식에 맞게 가져온다.//
+                VCSimpleFileInfo svnFileInfo = new VCSimpleFileInfo(
+                		entry.getName(), path,
+						isDirectory(commitID,path),
+						""+entry.getRevision(), entry.getCommitMessage().toString(),
+						entry.getDate(),
+						entry.getAuthor(),
+						"svn not email");
+                
+                svnFileInfoList.add(svnFileInfo);
+            }
+        	
+        	return svnFileInfoList;
+        } catch(SVNException e){
+        	e.printStackTrace();
+        }
+        
+        return svnFileInfoList;
+    }
 
 	public List<String> getVCFileList(String commitID) {
 		// TODO Auto-generated method stub
