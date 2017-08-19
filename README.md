@@ -23,6 +23,9 @@
 <li>repository file list view -> issue(move next depth is not working)
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/warning.png" width="30" height="30">
 </li>
+<li>commit log list
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/fixicon.png" width="30" height="30">
+</li>
 </div>
 <div>
 <h2><label># Issue, Milestone</label></h2>
