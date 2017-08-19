@@ -1,5 +1,13 @@
 <h1>Forweaver-svn (ver 0.1)</h1>
 <div>
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/svnicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/svnkiticon.png" width="80" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/springicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/springsecurityicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/mongodbicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/tortoisesvnicon.png" width="45" height="45">
+</div>
+<div>
 <h1><label>$ Forweaver for SVN</h1></label>
 </div>
 <div>
@@ -15,6 +23,15 @@
 </div>
 <br>
 <div>
+<h2><label># Subversion architecture</label></h2>
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture.png" width="600" height="600">
+<div>
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture_2.png" width="450" height="450">&nbsp&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture_3.png" width="350" height="350">
+</div>
+</div>
+<br>
+<div>
 <h2><label># function test list</label></h2>
 <h3><label>* SVNKit Function List</label></h3>
 <li>make repository</li>
@@ -23,6 +40,9 @@
 <li>repository file list view -> issue(move next depth is not working)
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/warning.png" width="30" height="30">
 </li>
+<li>commit log list (paging)
+</li>
+<li>log diff</li>
 </div>
 <div>
 <h2><label># Issue, Milestone</label></h2>
@@ -31,3 +51,4 @@
 <br>
 <h2><label># OpenSource Copyright</label></h2>
 <li>SVNKit : copyright © 2004-2017, tmate software</li>
+<li>Forweaver : © Forweaver.com 2015 / forweaver.com@gmail.com</li>
