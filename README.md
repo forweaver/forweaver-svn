@@ -43,6 +43,9 @@
 <li>commit log list (paging)
 </li>
 <li>log diff</li>
+<li>blame
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/fixicon.png" width="30" height="30">
+</li>
 </div>
 <div>
 <h2><label># Issue, Milestone</label></h2>
