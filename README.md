@@ -26,7 +26,7 @@
 <h2><label># Subversion architecture</label></h2>
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture.png" width="600" height="600">
 <div>
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture_2.png" width="400" height="400">&nbsp&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture_2.png" width="450" height="450">&nbsp&nbsp
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture_3.png" width="350" height="350">
 </div>
 </div>
