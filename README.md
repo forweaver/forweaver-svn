@@ -15,6 +15,11 @@
 </div>
 <br>
 <div>
+<h2><label># Subversion architecture</label></h2>
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitScreenshot/screenshot_3_architecture.png" width="600" height="600">
+</div>
+<br>
+<div>
 <h2><label># function test list</label></h2>
 <h3><label>* SVNKit Function List</label></h3>
 <li>make repository</li>
