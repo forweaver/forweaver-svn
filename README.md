@@ -25,9 +25,7 @@
 </li>
 <li>commit log list (paging)
 </li>
-<li>log diff
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/fixicon.png" width="30" height="30">
-</li>
+<li>log diff</li>
 </div>
 <div>
 <h2><label># Issue, Milestone</label></h2>
@@ -36,4 +34,4 @@
 <br>
 <h2><label># OpenSource Copyright</label></h2>
 <li>SVNKit : copyright © 2004-2017, tmate software</li>
-<li>Forweaver : © Forweaver.com 2015 / forweaver.com@gmail.com <li>
+<li>Forweaver : © Forweaver.com 2015 / forweaver.com@gmail.com</li>
