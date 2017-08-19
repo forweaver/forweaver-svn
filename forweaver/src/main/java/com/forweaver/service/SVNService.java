@@ -96,8 +96,22 @@ public class SVNService implements VCService{
 	}
 
 	public int getCommitListCount(String parentDirctoryName, String repositoryName, String commit) {
-		// TODO Auto-generated method stub
-		return 0;
+		System.out.println("*****************************");
+		System.out.println("parentDirctoryName: " + parentDirctoryName);
+		System.out.println("repositoryName: " + repositoryName);
+		System.out.println("commitID: " + commit);
+	
+		//사용자 정보 출력(세션)//
+		Weaver weaver = weaverService.getCurrentWeaver();
+		System.out.println("==================");
+		System.out.println("* Session id: " + weaver.getUsername());
+		System.out.println("* Session password: " + weaver.getPassword());
+		System.out.println("==================");
+		
+		//프로젝트 초기화//
+		svnUtil.RepoInt(parentDirctoryName, repositoryName);
+		
+		return svnUtil.getCommitListCount(commit);
 	}
 
 	public List<VCSimpleFileInfo> getVCSimpleFileInfoList(String parentDirctoryName, String repositoryName,
@@ -125,14 +139,43 @@ public class SVNService implements VCService{
 	}
 
 	public List<VCSimpleCommitLog> getVCCommitLogList(String parentDirctoryName, String repositoryName,
-			String branchName, int page, int number) {
-		// TODO Auto-generated method stub
-		return null;
+			String commitID, int page, int number) {
+		System.out.println("*****************************");
+		System.out.println("parentDirctoryName: " + parentDirctoryName);
+		System.out.println("repositoryName: " + repositoryName);
+		System.out.println("commitID: " + commitID);
+	
+		//사용자 정보 출력(세션)//
+		Weaver weaver = weaverService.getCurrentWeaver();
+		System.out.println("==================");
+		System.out.println("* Session id: " + weaver.getUsername());
+		System.out.println("* Session password: " + weaver.getPassword());
+		System.out.println("==================");
+		
+		List<VCSimpleCommitLog> svnCommitLogList = svnUtil.getCommitLogList(commitID,page,number);
+		
+		return svnCommitLogList;
 	}
 
-	public VCCommitLog getVCCommitLog(String parentDirctoryName, String repositoryName, String branchName) {
-		// TODO Auto-generated method stub
-		return null;
+	public VCCommitLog getVCCommitLog(String parentDirctoryName, String repositoryName, String commitID) {
+		System.out.println("*****************************");
+		System.out.println("parentDirctoryName: " + parentDirctoryName);
+		System.out.println("repositoryName: " + repositoryName);
+		System.out.println("commitID: " + commitID);
+	
+		//사용자 정보 출력(세션)//
+		Weaver weaver = weaverService.getCurrentWeaver();
+		System.out.println("==================");
+		System.out.println("* Session id: " + weaver.getUsername());
+		System.out.println("* Session password: " + weaver.getPassword());
+		System.out.println("==================");
+		
+		//프로젝트 초기화//
+		svnUtil.RepoInt(parentDirctoryName, repositoryName);
+		
+		VCCommitLog gitCommitLog = svnUtil.getCommitLog(commitID);
+		
+		return gitCommitLog;
 	}
 
 	public void getProjectZip(String parentDirctoryName, String repositoryName, String commitName, String format,

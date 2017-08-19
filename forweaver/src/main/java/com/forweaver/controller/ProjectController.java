@@ -532,16 +532,16 @@ public class ProjectController {
 			@PathVariable("creatorName") String creatorName,Model model) {
 		Project project = projectService.get(creatorName+"/"+projectName);
 
-		List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
+		//List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
 
-		model.addAttribute("gitBranchList", gitBranchList.subList(1, gitBranchList.size()));
-		model.addAttribute("selectBranch",gitBranchList.get(0));
+		//model.addAttribute("gitBranchList", gitBranchList.subList(1, gitBranchList.size()));
+		//model.addAttribute("selectBranch",gitBranchList.get(0));
 		model.addAttribute("project", project);
 		model.addAttribute("pageIndex",1);
 		model.addAttribute("gitCommitListCount", 
-				gitService.getCommitListCount(creatorName, projectName,gitBranchList.get(0)));
+				svnService.getCommitListCount(creatorName, projectName, "-1"));
 		model.addAttribute("gitCommitList", 
-				gitService.getGitCommitLogList(creatorName, projectName,gitBranchList.get(0),1,15));
+				svnService.getVCCommitLogList(creatorName, projectName,"-1",1,15));
 
 		return "/project/commitLog";
 	}
@@ -634,6 +634,7 @@ public class ProjectController {
 		return "redirect:/project/"+project.getName()+"/edit";
 	}
 
+	//SVN Test Code//
 	@RequestMapping("/{creatorName}/{projectName}/commitlog/commit:{commit}/page:{page}")
 	public String commitLog(@PathVariable("projectName") String projectName,
 			@PathVariable("creatorName") String creatorName,
@@ -646,20 +647,32 @@ public class ProjectController {
 		commit = commit.substring(0, commit.indexOf("/"));
 		int pageNum = WebUtil.getPageNumber(page);
 		int size = WebUtil.getPageSize(page,0);
-		List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
+		
+		System.out.println("----<paging>-----");
+		System.out.println("pageNum: " + pageNum);
+		System.out.println("size: " + size);
+		System.out.println("uri: " + uri);
+		System.out.println("project: " + project.getName());
+		System.out.println("commit: " + commit);
+		/*List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
 
 		gitBranchList.remove(commit);
 		model.addAttribute("gitBranchList", gitBranchList);
-		model.addAttribute("selectBranch",commit);
+		model.addAttribute("selectBranch",commit);*/
 		model.addAttribute("project", project);
 		model.addAttribute("pageIndex",page);
 		model.addAttribute("gitCommitListCount", 
-				gitService.getCommitListCount(creatorName, projectName,commit));
+				svnService.getCommitListCount(creatorName, projectName,"-1"));
 		model.addAttribute("gitCommitList", 
-				gitService.getGitCommitLogList(creatorName, projectName,commit,pageNum,size));
+				svnService.getVCCommitLogList(creatorName, projectName,"-1",pageNum,size));
+		
+		System.out.println("-----------------");
+		
 		return "/project/commitLog";
 	}
+	//*****************//
 
+	//SVN Test Code//
 	@RequestMapping("/{creatorName}/{projectName}/commitlog-viewer/commit:{commit}")
 	public String commitLogViewer(@PathVariable("projectName") String projectName,
 			@PathVariable("creatorName") String creatorName,
@@ -668,15 +681,26 @@ public class ProjectController {
 		Project project = projectService.get(creatorName+"/"+projectName);
 		String uri = request.getRequestURI();
 		commit = uri.substring(uri.indexOf("/commit:")+8);
-		VCCommitLog gitCommitLog = gitService.getGitCommitLog(creatorName, projectName, commit);
-		if(gitCommitLog == null)
+		System.out.println("----<commit logview>-----");
+		System.out.println("uri: " + uri);
+		System.out.println("project: " + project.getName());
+		System.out.println("commit: " + commit);
+		
+		VCCommitLog svnCommitLog = svnService.getVCCommitLog(creatorName, projectName, commit);
+		
+		//diff결과가 존재하지 않은 경우 commitlist로 리다이렉션//
+		if(svnCommitLog == null){
+			System.out.println("==> svncommitlog info null");
 			return "redirect:/project/"+ creatorName+"/"+projectName+"/commitlog";
+		}
+		
+		//diff결과가 존재하는 경우 commitlogview페이지에서 출력//
 		model.addAttribute("project", project);
-		model.addAttribute("gitCommitLog",gitCommitLog);
+		model.addAttribute("gitCommitLog",svnCommitLog);
 		//model.addAttribute("rePosts", rePostService.get(project.getName()+"/"+gitCommitLog.getCommitLogID(),5,""));
 		return "/project/commitLogViewer";
 	}
-
+	//***************//
 
 	@RequestMapping("/{creatorName}/{projectName}/weaver")
 	public String manageWeaver(@PathVariable("projectName") String projectName,

@@ -34,6 +34,18 @@ public class VCCommitLog implements Serializable {
 		this.commitDate = new Date(commitDate*1000L);
 	}
 	
+	public VCCommitLog(String commitLogID, String shortMassage,String fullMassage,
+			String commiterName, String commiterEmail,String diff,String note,
+			Date commitDate) {
+		this.commitLogID = commitLogID;
+		this.shortMassage = shortMassage;
+		this.fullMassage = fullMassage;
+		this.commiterName = commiterName;
+		this.commiterEmail = commiterEmail;
+		this.note = note;
+		this.diff = diff;
+		this.commitDate = commitDate;
+	}
 	
 	public String getCommitLogID() {
 		return commitLogID;

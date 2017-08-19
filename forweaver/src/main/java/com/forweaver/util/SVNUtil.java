@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.gitective.core.BlobUtils;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -26,6 +28,9 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNDiffClient;
+import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import com.forweaver.domain.Project;
@@ -383,9 +388,36 @@ public class SVNUtil implements VCUtil{
 		return null;
 	}
 
-	public int getCommitListCount(String refName) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getCommitListCount(String commitID) {
+		System.out.println("*****************************");
+		System.out.println("commitID: " + commitID);
+		System.out.println("path: " + this.path);
+		
+		int logcount = 0;
+		
+		//저장소의 로그기록을 가져온다.//
+		Collection logEntries = null;
+
+		int selectCommitIndex = 0;
+		int endRevesion = Integer.parseInt(commitID); //HEAD (the latest) revision
+				
+		try {
+			logEntries = this.repository.log(new String[] { "" }, null, selectCommitIndex, endRevesion, true, true);
+					
+			for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
+				SVNLogEntry logEntry = (SVNLogEntry) entries.next();
+				logcount++;
+			}
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		System.out.println("==> log count: " + logcount);
+		
+		return logcount;
 	}
 
 	// 디렉터리일 경우 정보 리스트
@@ -449,13 +481,185 @@ public class SVNUtil implements VCUtil{
 	}
 
 	public VCCommitLog getCommitLog(String commitID) {
-		// TODO Auto-generated method stub
-		return null;
+		VCCommitLog svnCommitLog = null;
+		String diffStr = new String();
+		
+		String revesion = "";
+		String commitMessage = "";
+		String fullMessage = "";
+		String commiterName = "";
+		String commiterEmail = "svn no email";
+		Date commitdate = null;
+		
+		//diff와 로그정보를 가져온다.//
+		//저장소의 로그기록을 가져온다.//
+		Collection logEntries = null;
+
+		int selectCommitIndex = Integer.parseInt(commitID);
+		int endRevesion = Integer.parseInt(commitID); //HEAD (the latest) revision
+		
+		try{
+			logEntries = this.repository.log(new String[] { "" }, null, selectCommitIndex, endRevesion, true, true);
+			
+			for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
+				SVNLogEntry logEntry = (SVNLogEntry) entries.next();
+				
+				revesion = ""+logEntry.getRevision();
+				commitMessage = logEntry.getMessage();
+				fullMessage = logEntry.getMessage();
+				commiterName = logEntry.getAuthor();
+				commitdate = logEntry.getDate();
+			}
+			
+			//diff정보를 가져온다.(선택된 커밋과 하나 이전 커밋과의 비교)//
+			diffStr = doDiff(selectCommitIndex-1, selectCommitIndex);
+	
+			System.out.println("--Diff result--");
+			System.out.println(diffStr);
+			
+			//로그객체를 생성//
+			svnCommitLog = new VCCommitLog(revesion,
+					commitMessage, fullMessage, commiterName, commiterEmail,
+					diffStr, null,commitdate);
+			
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return svnCommitLog;
+	}
+	
+	/** SVN Diff 수행
+	 * 
+	 * @param revesionone
+	 * @param revesiontwo
+	 * @return
+	 */
+	public String doDiff(long revesionone, long revesiontwo){
+		System.out.println("revesionone: " + revesionone + " / revesiontwo: " + revesiontwo);
+		String diffresult = null;
+		SVNRepository repository = null;
+		
+		try {
+			repository = this.getRepository(); //저장소를 불러온다.//
+			
+			System.out.println("==> repo root URL: " + repository.getRepositoryRoot(false)); //저장소의 루트 경로를 불러온다.//
+			
+			SVNURL svnURL = repository.getRepositoryRoot(false);
+			
+			System.out.println("repo setting succcess...");
+
+			// Get diffClient.
+		    SVNClientManager clientManager = SVNClientManager.newInstance();
+		    SVNDiffClient diffClient = clientManager.getDiffClient();
+		    
+		    // Using diffClient, write the changes by commitId into
+		    // byteArrayOutputStream, as unified format.
+		    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		    diffClient.doDiff(svnURL, null, SVNRevision.create(revesionone), SVNRevision.create(revesiontwo), SVNDepth.INFINITY, true, byteArrayOutputStream);
+		    //diffClient.doDiff(new File(repourl), SVNRevision.UNDEFINED, SVNRevision.create(revesionone), SVNRevision.create(revesiontwo), true, true, byteArrayOutputStream);
+		    diffresult = byteArrayOutputStream.toString();
+		    
+	        return diffresult;
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+		return diffresult;
 	}
 
-	public List<VCSimpleCommitLog> getCommitLogList(String branchName, int page, int number) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<VCSimpleCommitLog> getCommitLogList(String commitID, int page, int number) {
+		//파일내용, 커밋로그 2가를 call//
+		List<VCSimpleCommitLog> svncommitLogList = new ArrayList<VCSimpleCommitLog>();
+		//page카운트 변수//
+		int pageCount = 0;
+				
+		//저장소의 로그기록을 가져온다.//
+		Collection logEntries = null;
+
+		int selectCommitIndex = 0;
+		int endRevesion = Integer.parseInt(commitID); //HEAD (the latest) revision
+		
+		try{
+			//페이징 처리//
+			//1페이지인 경우는 그대로 간다.//
+			if(page == 1){
+				System.out.println("==> page : " + page);
+				System.out.println("==> number: " + number);
+				
+				logEntries = this.repository.log(new String[] { "" }, null, selectCommitIndex, endRevesion, true, true);
+				
+				for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
+					//System.out.println("pageCount: " + pageCount);
+					
+					if(pageCount > number){
+						break;
+					}
+					
+					SVNLogEntry logEntry = (SVNLogEntry) entries.next();
+							
+					//repotreelist_commitmessage.add(logEntry.getMessage());
+					svncommitLogList.add(new VCSimpleCommitLog(
+							""+logEntry.getRevision(),
+							logEntry.getMessage(),
+							logEntry.getAuthor(),
+							"not email svn",
+							logEntry.getDate()));
+					
+					
+					pageCount++;
+				}
+			} else if(page > 1){
+				//1페이지 이상부터는 루프의 범위가 달라진다.//
+				int startNumber = number+1;
+				int endNumber = page * number;
+			
+				System.out.println("==> page : " + startNumber);
+				System.out.println("==> number: " + endNumber);
+				
+				logEntries = this.repository.log(new String[] { "" }, null, startNumber, endRevesion, true, true);
+				
+				for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
+					//해당 범위에 들어왔을 때 로그를 추출//
+					if(pageCount > startNumber){
+						//System.out.println("pageCount: " + pageCount);
+						
+						SVNLogEntry logEntry = (SVNLogEntry) entries.next();
+						
+						//repotreelist_commitmessage.add(logEntry.getMessage());
+						svncommitLogList.add(new VCSimpleCommitLog(
+								""+logEntry.getRevision(),
+								logEntry.getMessage(),
+								logEntry.getAuthor(),
+								"not email svn",
+								logEntry.getDate()));
+					} if(pageCount > endNumber){
+						System.out.println("break log extract");
+						break;
+					}
+					
+					pageCount++;
+				}
+			}
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		pageCount = 0;
+		
+		//정렬순서를 내림차순으로 변경//
+		Descending descending = new Descending();
+		Collections.sort(svncommitLogList, descending);
+
+		return svncommitLogList;
 	}
 
 	public List<String> getBranchList() {
