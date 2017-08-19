@@ -1,11 +1,11 @@
 <h1>Forweaver-svn (ver 0.1)</h1>
 <div>
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/svnicon.png" width="50" height="50">&nbsp
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/svnkiticon.png" width="100" height="50">&nbsp
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/springicon.png" width="50" height="50">&nbsp
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/springsecurityicon.png" width="50" height="50">&nbsp
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/mongodbicon.png" width="50" height="50">&nbsp
-<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/tortoisesvnicon.png" width="55" height="55">
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/svnicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/svnkiticon.png" width="80" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/springicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/springsecurityicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/mongodbicon.png" width="40" height="40">&nbsp
+<img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/tortoisesvnicon.png" width="45" height="45">
 </div>
 <div>
 <h1><label>$ Forweaver for SVN</h1></label>
