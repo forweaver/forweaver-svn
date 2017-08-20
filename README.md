@@ -37,7 +37,7 @@
 <li>make repository</li>
 <li>remove repository</li>
 <li>Directory Check</li>
-<li>repository file list view -> issue(move next depth is not working)
+<li>repository file list view -> issue(icon image issue)
 <img src="https://raw.githubusercontent.com/seochangwook/forweaver.dev-SVN/master/gitimage/warning.png" width="30" height="30">
 </li>
 <li>commit log list (paging)
