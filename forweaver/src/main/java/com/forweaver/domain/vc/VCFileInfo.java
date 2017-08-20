@@ -34,6 +34,7 @@ public class VCFileInfo implements Serializable {
 		this.selectCommitIndex = selectCommitIndex;
 		this.isDirectory = isDirectory;
 	}
+	
 	public String getName() {
 		return name;
 	}

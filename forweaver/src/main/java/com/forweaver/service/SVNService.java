@@ -28,7 +28,7 @@ public class SVNService implements VCService{
 	WeaverService weaverService;
 	
 	public VCFileInfo getFileInfo(String parentDirctoryName, String repositoryName, String commitID, String filePath) {
-		System.out.println("*****************************");
+		/*System.out.println("*****************************");
 		System.out.println("parentDirctoryName: " + parentDirctoryName);
 		System.out.println("repositoryName: " + repositoryName);
 		System.out.println("commitID: " + commitID);
@@ -39,44 +39,22 @@ public class SVNService implements VCService{
 		System.out.println("==================");
 		System.out.println("* Session id: " + weaver.getUsername());
 		System.out.println("* Session password: " + weaver.getPassword());
-		System.out.println("==================");
+		System.out.println("==================");*/
 		
 		//프로젝트 초기화//
 		svnUtil.RepoInt(parentDirctoryName, repositoryName);
 		
-		try {
-			/*//인증정보를 설정//
-			ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(userid, userpassword);
-	        repository.setAuthenticationManager(authManager);
+		/*//인증정보를 설정//
+		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(userid, userpassword);
+	    repository.setAuthenticationManager(authManager);*/
 	        
-	        System.out.println("Auth Check Success...");*/
+	    //commitID가 Long으로 들어온다는 가정//
+		commitID = "-1";
+		//svnUtil.isDirectory(commitID, filePath);
+		//저장소 리스트를 출력//
+		VCFileInfo gitFileInfo = svnUtil.getFileInfo(commitID, filePath);
 			
-			String repoUUID = svnUtil.getRepository().getRepositoryUUID(true).toString();
-			String reporevesion = ""+svnUtil.getRepository().getLatestRevision();
-			String repoRoot = svnUtil.getRepository().getRepositoryRoot(true).toString();
-			String repoURL = svnUtil.getRepository().getLocation().toString();
-			
-			System.out.println("repoUUID: " + repoUUID);
-			System.out.println("reporevesion: " + reporevesion);
-			System.out.println("repoRoot: " + repoRoot);
-			System.out.println("repoURL: " + repoURL);
-			
-			//commitID가 Long으로 들어온다는 가정//
-			commitID = "-1";
-			//svnUtil.isDirectory(commitID, filePath);
-			//저장소 리스트를 출력//
-			VCFileInfo gitFileInfo = svnUtil.getFileInfo(commitID, filePath);
-			
-			return gitFileInfo;
-			
-		} catch (SVNException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("*****************************");
-		
-		return null;
+		return gitFileInfo;
 	}
 
 	public VCFileInfo getFileInfoWithBlame(String parentDirctoryName, String repositoryName, String commitID,
@@ -96,18 +74,6 @@ public class SVNService implements VCService{
 	}
 
 	public int getCommitListCount(String parentDirctoryName, String repositoryName, String commit) {
-		System.out.println("*****************************");
-		System.out.println("parentDirctoryName: " + parentDirctoryName);
-		System.out.println("repositoryName: " + repositoryName);
-		System.out.println("commitID: " + commit);
-	
-		//사용자 정보 출력(세션)//
-		Weaver weaver = weaverService.getCurrentWeaver();
-		System.out.println("==================");
-		System.out.println("* Session id: " + weaver.getUsername());
-		System.out.println("* Session password: " + weaver.getPassword());
-		System.out.println("==================");
-		
 		//프로젝트 초기화//
 		svnUtil.RepoInt(parentDirctoryName, repositoryName);
 		
@@ -116,19 +82,6 @@ public class SVNService implements VCService{
 
 	public List<VCSimpleFileInfo> getVCSimpleFileInfoList(String parentDirctoryName, String repositoryName,
 			String commitID, String filePath) {
-		System.out.println("*****************************");
-		System.out.println("parentDirctoryName: " + parentDirctoryName);
-		System.out.println("repositoryName: " + repositoryName);
-		System.out.println("commitID: " + commitID);
-		System.out.println("filePath: " + filePath);
-	
-		//사용자 정보 출력(세션)//
-		Weaver weaver = weaverService.getCurrentWeaver();
-		System.out.println("==================");
-		System.out.println("* Session id: " + weaver.getUsername());
-		System.out.println("* Session password: " + weaver.getPassword());
-		System.out.println("==================");
-		
 		//프로젝트 초기화//
 		svnUtil.RepoInt(parentDirctoryName, repositoryName);
 		
@@ -140,36 +93,12 @@ public class SVNService implements VCService{
 
 	public List<VCSimpleCommitLog> getVCCommitLogList(String parentDirctoryName, String repositoryName,
 			String commitID, int page, int number) {
-		System.out.println("*****************************");
-		System.out.println("parentDirctoryName: " + parentDirctoryName);
-		System.out.println("repositoryName: " + repositoryName);
-		System.out.println("commitID: " + commitID);
-	
-		//사용자 정보 출력(세션)//
-		Weaver weaver = weaverService.getCurrentWeaver();
-		System.out.println("==================");
-		System.out.println("* Session id: " + weaver.getUsername());
-		System.out.println("* Session password: " + weaver.getPassword());
-		System.out.println("==================");
-		
 		List<VCSimpleCommitLog> svnCommitLogList = svnUtil.getCommitLogList(commitID,page,number);
 		
 		return svnCommitLogList;
 	}
 
 	public VCCommitLog getVCCommitLog(String parentDirctoryName, String repositoryName, String commitID) {
-		System.out.println("*****************************");
-		System.out.println("parentDirctoryName: " + parentDirctoryName);
-		System.out.println("repositoryName: " + repositoryName);
-		System.out.println("commitID: " + commitID);
-	
-		//사용자 정보 출력(세션)//
-		Weaver weaver = weaverService.getCurrentWeaver();
-		System.out.println("==================");
-		System.out.println("* Session id: " + weaver.getUsername());
-		System.out.println("* Session password: " + weaver.getPassword());
-		System.out.println("==================");
-		
 		//프로젝트 초기화//
 		svnUtil.RepoInt(parentDirctoryName, repositoryName);
 		

@@ -28,7 +28,7 @@ public class VCSimpleFileInfo implements Serializable {
 			int commitDateInt,String commiterName,
 			String commiterEmail) {
 		this.name = name;
-		this.path = "/"+path;
+		this.path = path;
 		this.isDirectory = isDirectory;
 		this.commitID = commitID;
 		this.simpleCommitLog = simpleCommitLog;
@@ -43,7 +43,7 @@ public class VCSimpleFileInfo implements Serializable {
 			Date commitDate,String commiterName,
 			String commiterEmail) {
 		this.name = name;
-		this.path = "/"+path;
+		this.path = path;
 		this.isDirectory = isDirectory;
 		this.commitID = commitID;
 		this.simpleCommitLog = simpleCommitLog;

@@ -119,50 +119,30 @@ public class SVNUtil implements VCUtil{
 	 * @return
 	 */
 	public boolean isDirectory(String commitID, String filePath) {
-		System.out.println("*****************************");
-		System.out.println("commitID: " + commitID);
-		System.out.println("filePath: " + filePath);
-		System.out.println("path: " + this.path);
+		System.out.println("--<Directory Check>--");
+		System.out.println("==> filepath: " + filePath);
+		System.out.println("==> commitID: " + commitID);
 		
-		try
-        {
-        	Collection entries = this.repository.getDir(filePath, Long.parseLong(commitID), null, (Collection) null);
-        	
-            Iterator iterator = entries.iterator();
-            
-            int repptreecount = 0;
-            
-        	while (iterator.hasNext()) {
-                SVNDirEntry entry = (SVNDirEntry) iterator.next();
-                
-                System.out.println("entry kind: " + entry.getKind().toString());
-                System.out.println("entry name: " + entry.getName().toString());
-                System.out.println("entry author: " + entry.getAuthor().toString());
-                System.out.println("entry revesion: " + entry.getRevision());
-                System.out.println("entry date: " + entry.getDate().toString());
-                System.out.println("entry lock: " + entry.getLock());
-                System.out.println("entry relative path: " + entry.getRelativePath().toString());
-                
-                //디렉터리인지 파일인지 구분//
-                if(entry.getKind().toString().equals("dir")){
-                	System.out.println("Directory? [YES]");
-                	
-                	return true;
-                } else{
-                	System.out.println("Directory? [NO]");
-                	
-                	return false;
-                }
+		//해당 filepath만 검증//
+		SVNDirEntry dirEntry=null;
+		
+		try {
+		    dirEntry=this.repository.info(filePath,Long.parseLong(commitID));
+		    
+		    if(dirEntry.getKind().toString().equals("dir")){
+            	System.out.println("[true directory]");
+            	System.out.println("---------------------");
+            	return true;
+            } else{
+            	System.out.println("[false directory]");
+            	System.out.println("---------------------");
+            	return false;
             }
-        } catch(SVNException e){
-        	e.printStackTrace();
-        	
-        	return false;
-        }
-		
-		System.out.println("*****************************");
-		
-		return false;
+		} catch (  SVNException e) {
+			e.printStackTrace();
+			
+			return false;
+		}
 	}
 
 	/** 프로젝트의 파일 정보를 가져옴
@@ -172,12 +152,11 @@ public class SVNUtil implements VCUtil{
 	 */
 	@SuppressWarnings("finally")
 	public VCFileInfo getFileInfo(String commitID, String filePath) {
-		System.out.println("*****************************");
-		System.out.println("commitID: " + commitID);
-		System.out.println("filePath: " + filePath);
-		System.out.println("path: " + this.path);
+		System.out.println("--<File Info>--");
+		System.out.println("==> filepath: " + filePath);
+		System.out.println("==> commit: " + commitID);
 		
-		//파일내용, 커밋로그 2가를 call//
+		//파일내용, 커밋로그 2개를 call//
 		List<VCSimpleCommitLog> commitLogList = new ArrayList<VCSimpleCommitLog>();
 		
 		//저장소의 로그기록을 가져온다.//
@@ -192,7 +171,6 @@ public class SVNUtil implements VCUtil{
 			for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
 				SVNLogEntry logEntry = (SVNLogEntry) entries.next();
 				
-				//repotreelist_commitmessage.add(logEntry.getMessage());
 				commitLogList.add(new VCSimpleCommitLog(
 						""+logEntry.getRevision(),
 						logEntry.getMessage(),
@@ -201,37 +179,19 @@ public class SVNUtil implements VCUtil{
 						logEntry.getDate()));
 			}
 			
+			//해당 파일에 대해서 로그가 일치하는 부분에서 종료//
 			for(;selectCommitIndex<commitLogList.size();selectCommitIndex++)
 				if(commitLogList.get(selectCommitIndex).getCommitLogID().equals(endRevesion))
 					break;
-			
-			
 		} catch (SVNException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch(Exception e){
 			e.printStackTrace();
 		} finally{	
-			System.out.println("<<Log Info>>");
-			System.out.println("log count: " + commitLogList.size());
-			
-			//revesion 0은 생략//
-			for(int i=1; i<commitLogList.size(); i++){
-				System.out.println("["+i+"] revesion: " + commitLogList.get(i).getCommitLogID());
-				System.out.println("["+i+"] message: " + commitLogList.get(i).getShortMassage());
-				System.out.println("["+i+"] author: " + commitLogList.get(i).getCommiterName());
-				System.out.println("["+i+"] email: " + commitLogList.get(i).getCommiterEmail());
-				System.out.println("["+i+"] date: " + commitLogList.get(i).getCommitDate());
-				System.out.println("--");
-			}
-			
-			System.out.println("<><><><><><><><><>");
-			
 			//파일의 내용을 불러온다.(String, byte[])//
 			String stringContent = doPrintFileStringcontent(filePath);
 			byte[] byteContent = doPrintFileBytecontent(filePath);
-			
-			System.out.println("*****************************");
 			
 			return new VCFileInfo(filePath, stringContent, byteContent,
 					commitLogList, selectCommitIndex,isDirectory(commitID,filePath));
@@ -244,12 +204,10 @@ public class SVNUtil implements VCUtil{
 	 * @return
 	 */
 	public String doPrintFileStringcontent(String filename){
+		System.out.println("--<file content>--");
+		System.out.println("==> filename: " + filename);
+		
 		String filecontent = "";
-		
-		System.out.println("file content view");
-		
-		System.out.println("file name: " + filename);
-		System.out.println("local path: " + this.path);
 		
 		SVNRepository repository = null;
 		
@@ -262,15 +220,11 @@ public class SVNUtil implements VCUtil{
 			
 			SVNNodeKind nodeKind = repository.checkPath(filename, -1);
 
-			System.out.println("repo check ok...");
-			System.out.println("nodeKind: " + nodeKind);
 			if (nodeKind == SVNNodeKind.NONE || nodeKind == SVNNodeKind.FILE) {
 				SVNProperties fileProperties = new SVNProperties();
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 				repository.getFile(filename, -1, fileProperties, baos);
-				
-				System.out.println("file view ok...");
 				
 				String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
 				boolean isTextType = SVNProperty.isTextMimeType(mimeType);
@@ -280,31 +234,31 @@ public class SVNUtil implements VCUtil{
 				while (iterator.hasNext()) {
 					String propertyName = (String) iterator.next();
 					String propertyValue = fileProperties.getStringValue(propertyName);
-					System.out.println("File property: " + propertyName + "=" + propertyValue);
 				}
 
 				if (isTextType) {
-					System.out.println("File contents:");
+					System.out.println("==> "+filename +" File contents:");
+					
 					filecontent = baos.toString();
 	
 					System.out.println(filecontent);
-					
+					System.out.println("------------------");
 					return filecontent;
 				} else {
-					System.out.println("Not a text file.");
-					
+					System.out.println(filename + " Not a text file.");
+					System.out.println("------------------");
 					return filecontent;
 				}
 			} else if (nodeKind == SVNNodeKind.DIR) {
-				System.out.println("is Directory");
-				
+				System.out.println(filename + " is Directory");
+				System.out.println("------------------");
 				return filecontent;
 			}
 			
 			
 		} catch (SVNException e) {
 			e.printStackTrace();
-			
+			System.out.println("------------------");
 			return filecontent;
 		}
 		
@@ -317,11 +271,10 @@ public class SVNUtil implements VCUtil{
 	 * @return
 	 */
 	public byte[] doPrintFileBytecontent(String filename){
-		byte[] content = null;
-		System.out.println("file content view");
+		System.out.println("--<file content>--");
+		System.out.println("==> filename: " + filename);
 		
-		System.out.println("file name: " + filename);
-		System.out.println("local path: " + this.path);
+		byte[] content = null;
 		
 		SVNRepository repository = null;
 		
@@ -334,15 +287,11 @@ public class SVNUtil implements VCUtil{
 			
 			SVNNodeKind nodeKind = repository.checkPath(filename, -1);
 
-			System.out.println("repo check ok...");
-			System.out.println("nodeKind: " + nodeKind);
 			if (nodeKind == SVNNodeKind.NONE || nodeKind == SVNNodeKind.FILE) {
 				SVNProperties fileProperties = new SVNProperties();
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 				repository.getFile(filename, -1, fileProperties, baos);
-				
-				System.out.println("file view ok...");
 				
 				String mimeType = fileProperties.getStringValue(SVNProperty.MIME_TYPE);
 				boolean isTextType = SVNProperty.isTextMimeType(mimeType);
@@ -352,31 +301,30 @@ public class SVNUtil implements VCUtil{
 				while (iterator.hasNext()) {
 					String propertyName = (String) iterator.next();
 					String propertyValue = fileProperties.getStringValue(propertyName);
-					System.out.println("File property: " + propertyName + "=" + propertyValue);
 				}
 
 				if (isTextType) {
-					System.out.println("File contents:");
+					System.out.println("==> "+filename +" File contents:");
 					content = baos.toByteArray();
 	
 					System.out.println(content);
 					
 					return content;
 				} else {
-					System.out.println("Not a text file.");
-					
+					System.out.println(filename + " Not a text file.");
+					System.out.println("------------------");
 					return content;
 				}
 			} else if (nodeKind == SVNNodeKind.DIR) {
-				System.out.println("is Directory");
-				
+				System.out.println(filename + " is Directory");
+				System.out.println("------------------");
 				return content;
 			}
 			
 			
 		} catch (SVNException e) {
 			e.printStackTrace();
-			
+			System.out.println("------------------");
 			return content;
 		}
 		
@@ -389,10 +337,6 @@ public class SVNUtil implements VCUtil{
 	}
 
 	public int getCommitListCount(String commitID) {
-		System.out.println("*****************************");
-		System.out.println("commitID: " + commitID);
-		System.out.println("path: " + this.path);
-		
 		int logcount = 0;
 		
 		//저장소의 로그기록을 가져온다.//
@@ -426,14 +370,10 @@ public class SVNUtil implements VCUtil{
 	
 		SVNRepository repository = this.repository;
 		
+		System.out.println("==> fileinfo list path: " + filePath);
+		
 		try {
 			svnFileInfoList = listEntries(repository, filePath, commitID); //파일내의 정보를 불러온다.//
-			
-			System.out.println("list size: " + svnFileInfoList.size());
-			
-			for(int i=0; i<svnFileInfoList.size(); i++){
-				System.out.println("info: " + svnFileInfoList.get(i).getName());
-			}
 		} catch (SVNException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -443,8 +383,11 @@ public class SVNUtil implements VCUtil{
 	}
 	
 	//파일 리스트 정보를 가져온다.//
-	public List<VCSimpleFileInfo> listEntries(SVNRepository repository, String path, String commitID) throws SVNException {
+	private List<VCSimpleFileInfo> listEntries(SVNRepository repository, String path, String commitID) throws SVNException {
 		List<VCSimpleFileInfo> svnFileInfoList = new ArrayList<VCSimpleFileInfo>();
+		
+		System.out.println("--<listEntries>--");
+		System.out.println("path: " + path);
 		
         try
         {
@@ -457,7 +400,7 @@ public class SVNUtil implements VCUtil{
                 
                 //디렉터리 출력 형식에 맞게 가져온다.//
                 VCSimpleFileInfo svnFileInfo = new VCSimpleFileInfo(
-                		entry.getName(), path,
+                		entry.getName(), path+"/"+entry.getName(),
 						isDirectory(commitID,path),
 						""+entry.getRevision(), entry.getCommitMessage().toString(),
 						entry.getDate(),
@@ -467,6 +410,7 @@ public class SVNUtil implements VCUtil{
                 svnFileInfoList.add(svnFileInfo);
             }
         	
+        	System.out.println("------------------");
         	return svnFileInfoList;
         } catch(SVNException e){
         	e.printStackTrace();
@@ -514,7 +458,7 @@ public class SVNUtil implements VCUtil{
 			//diff정보를 가져온다.(선택된 커밋과 하나 이전 커밋과의 비교)//
 			diffStr = doDiff(selectCommitIndex-1, selectCommitIndex);
 	
-			System.out.println("--Diff result--");
+			System.out.println("==> Diff result:");
 			System.out.println(diffStr);
 			
 			//로그객체를 생성//
@@ -539,18 +483,13 @@ public class SVNUtil implements VCUtil{
 	 * @return
 	 */
 	public String doDiff(long revesionone, long revesiontwo){
-		System.out.println("revesionone: " + revesionone + " / revesiontwo: " + revesiontwo);
 		String diffresult = null;
 		SVNRepository repository = null;
 		
 		try {
 			repository = this.getRepository(); //저장소를 불러온다.//
 			
-			System.out.println("==> repo root URL: " + repository.getRepositoryRoot(false)); //저장소의 루트 경로를 불러온다.//
-			
 			SVNURL svnURL = repository.getRepositoryRoot(false);
-			
-			System.out.println("repo setting succcess...");
 
 			// Get diffClient.
 		    SVNClientManager clientManager = SVNClientManager.newInstance();
@@ -589,9 +528,6 @@ public class SVNUtil implements VCUtil{
 			//페이징 처리//
 			//1페이지인 경우는 그대로 간다.//
 			if(page == 1){
-				System.out.println("==> page : " + page);
-				System.out.println("==> number: " + number);
-				
 				logEntries = this.repository.log(new String[] { "" }, null, selectCommitIndex, endRevesion, true, true);
 				
 				for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
@@ -619,9 +555,6 @@ public class SVNUtil implements VCUtil{
 				int startNumber = number+1;
 				int endNumber = page * number;
 			
-				System.out.println("==> page : " + startNumber);
-				System.out.println("==> number: " + endNumber);
-				
 				logEntries = this.repository.log(new String[] { "" }, null, startNumber, endRevesion, true, true);
 				
 				for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
@@ -639,7 +572,6 @@ public class SVNUtil implements VCUtil{
 								"not email svn",
 								logEntry.getDate()));
 					} if(pageCount > endNumber){
-						System.out.println("break log extract");
 						break;
 					}
 					
