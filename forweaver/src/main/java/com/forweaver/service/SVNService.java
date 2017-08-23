@@ -59,8 +59,19 @@ public class SVNService implements VCService{
 
 	public VCFileInfo getFileInfoWithBlame(String parentDirctoryName, String repositoryName, String commitID,
 			String filePath) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("projectDirectoryName: " + parentDirctoryName);
+		System.out.println("repositoryName: " + repositoryName);
+		System.out.println("commitID: " + commitID);
+		System.out.println("filePath: " + filePath);
+		
+		svnUtil.RepoInt(parentDirctoryName,repositoryName);
+
+		VCFileInfo svnFileInfo = svnUtil.getFileInfo(commitID, filePath);
+		if(!svnFileInfo.isDirectory()){
+			System.out.println("blame set");
+			svnFileInfo.setBlames(svnUtil.getBlame(filePath, commitID));
+		}
+		return svnFileInfo;
 	}
 
 	public List<String> getBranchList(String parentDirctoryName, String repositoryName) {

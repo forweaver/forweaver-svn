@@ -17,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.gitective.core.BlobUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
@@ -30,6 +31,7 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNDiffClient;
+import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
@@ -45,6 +47,9 @@ public class SVNUtil implements VCUtil{
 	private String svnreporootPath;
 	private String path;
 	private SVNRepository repository;
+	
+	@Autowired
+	AnnotationHandler annotationhandler;
 
 	public SVNUtil(){
 		this.svnPath = "/Users/macbook/project/svn/"; //svn의 로컬주소(프로젝트 디폴드 주소) 설정//
@@ -615,7 +620,49 @@ public class SVNUtil implements VCUtil{
 	}
 
 	public List<VCBlame> getBlame(String filePath, String commitID) {
-		// TODO Auto-generated method stub
+		System.out.println("===== Blame set...");
+		System.out.println("filePath: " + filePath);
+		System.out.println("commitID: " + commitID);
+		
+		long startRevesion = 0;
+		long endRevesion = Long.parseLong(commitID);
+		
+		System.out.println("start Revesion: " + startRevesion);
+		System.out.println("end Revesion: " + endRevesion);
+		
+		List<VCBlame> gitBlames = new ArrayList<VCBlame>();
+		Map<String, Object>resultblame = new HashMap<String, Object>();
+		
+		SVNRepository repository = null;
+		//블렘을 수행하는 핸들러 호출//
+		try {	
+			//Get LogClient//
+			SVNClientManager clientManager = SVNClientManager.newInstance();
+			SVNLogClient logClient = clientManager.getLogClient();
+			
+			boolean includeMergedRevisions = false;
+			
+			annotationhandler.setInit(includeMergedRevisions, true, logClient.getOptions());
+			
+			repository = this.getRepository(); //저장소를 불러온다.//
+			
+			SVNURL svnURL = repository.getRepositoryRoot(false).appendPath(filePath, false);
+			
+			System.out.println("repo address: " + repository.getRepositoryRoot(false).getPath());
+			
+			logClient.doAnnotate(svnURL, SVNRevision.UNDEFINED, SVNRevision.create(startRevesion), SVNRevision.create(endRevesion), annotationhandler);
+		  
+			Map<String, Object>resultmap = annotationhandler.getResult();
+			resultblame.put("resultval", resultmap);
+		} catch (SVNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			resultblame.put("resultval", "0");
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 

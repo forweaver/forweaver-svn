@@ -264,76 +264,74 @@ public class ProjectController {
 	}
 
 	//************ SVN Test Code ******************//
-		@RequestMapping("/{creatorName}/{projectName}/browser/commit:{commit}/**")
-		public String fileBrowser(HttpServletRequest request,@PathVariable("projectName") String projectName,
-				@PathVariable("creatorName") String creatorName,
-				@PathVariable("commit") String commit,Model model) throws UnsupportedEncodingException  {
-			Project project = projectService.get(creatorName+"/"+projectName);
-			String uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
-			String filePath = uri.substring(uri.indexOf("filepath:")+9);
+	@RequestMapping("/{creatorName}/{projectName}/browser/commit:{commit}/**")
+	public String fileBrowser(HttpServletRequest request,@PathVariable("projectName") String projectName,
+			@PathVariable("creatorName") String creatorName,
+			@PathVariable("commit") String commit,Model model) throws UnsupportedEncodingException  {
+		Project project = projectService.get(creatorName+"/"+projectName);
+		String uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
+		String filePath = uri.substring(uri.indexOf("filepath:")+9);
 			
-			System.out.println("******************************<Project Browser>********************************");
+		System.out.println("******************************<Project Browser>********************************");
 			
-			filePath = filePath.replace(",jsp", ".jsp");
+		filePath = filePath.replace(",jsp", ".jsp");
 			
-			commit = uri.substring(uri.indexOf("/commit:")+8);
-			commit = commit.substring(0, commit.indexOf("/"));
+		commit = uri.substring(uri.indexOf("/commit:")+8);
+		commit = commit.substring(0, commit.indexOf("/"));
 			
-			//프로젝트 path초기화//
-			svnUtil.Init(project);
+		//프로젝트 path초기화//
+		svnUtil.Init(project);
 			
-			//파일의 리스트 정보를 불러온다.//
-			VCFileInfo svnFileInfo = svnService.getFileInfo(creatorName, projectName, commit, filePath);
+		//파일의 리스트 정보를 불러온다.//
+		VCFileInfo svnFileInfo = svnService.getFileInfo(creatorName, projectName, commit, filePath);
 			
-			System.out.println("test: " + svnFileInfo.isDirectory());
-			if(svnFileInfo == null || svnFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
-				//디렉터리이기에 파일내용은 필요없는 VCSimpleFileInfo를 생성//
-				commit = "-1";
+		System.out.println("test: " + svnFileInfo.isDirectory());
+		if(svnFileInfo == null || svnFileInfo.isDirectory()){ // 만약에 주소의 파일이 디렉토리라면
+			//디렉터리이기에 파일내용은 필요없는 VCSimpleFileInfo를 생성//
+			commit = "-1";
 				
-				List<VCSimpleFileInfo> svnFileInfoList = 
-						svnService.getVCSimpleFileInfoList(creatorName, projectName,commit,filePath);
+			List<VCSimpleFileInfo> svnFileInfoList = 
+					svnService.getVCSimpleFileInfoList(creatorName, projectName,commit,filePath);
 
-				for(int i=0; i<svnFileInfoList.size(); i++){
-					System.out.println("directory info log: " + svnFileInfoList.get(i).getName());
-				}
-				/*List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
-				gitBranchList.remove(commit);*/
-
-				model.addAttribute("project", project);
-				model.addAttribute("gitFileInfoList", svnFileInfoList);
-
-				model.addAttribute("gitBranchList",null);
-				model.addAttribute("selectBranch",null);
-				//README.md의 파일내용을 불러온다.(현재는 하드코딩)//
-				model.addAttribute("readme","README.md file content view");
-				model.addAttribute("filePath",filePath);
-				model.addAttribute("commit",commit);
-
-				System.out.println("*******************************************************************************");
-				return "/project/browser";
-			}else{ // 파일이라면
-				for(int i=0; i<svnFileInfo.getCommitLogList().size(); i++){
-					System.out.println("file info log: " + svnFileInfo.getName());
-				}
-				model.addAttribute("project", project);
-				model.addAttribute("fileName", svnFileInfo.getName());
-				if(!WebUtil.isCodeName(svnFileInfo.getName()))
-					svnFileInfo.setContent("이 파일은 화면에 표시할 수 없습니다!");
-				if(svnFileInfo.getContent() != null)
-					model.addAttribute("fileContent", new String(svnFileInfo.getContent().getBytes(Charset.forName("EUC-KR")),Charset.forName("CP949")));
-				model.addAttribute("gitLogList", svnFileInfo.getCommitLogList());
-				model.addAttribute("selectCommitIndex", svnFileInfo.getSelectCommitIndex());
-				model.addAttribute("gitCommitLog",svnFileInfo.getSelectCommitLog());
-				model.addAttribute("filePath",filePath);
-				model.addAttribute("isCodeName",WebUtil.isCodeName(filePath));
-				model.addAttribute("isImageName",WebUtil.isImageName(filePath));
-				
-				System.out.println("*******************************************************************************");
-				return "/project/fileViewer";
+			for(int i=0; i<svnFileInfoList.size(); i++){
+				System.out.println("directory info log: " + svnFileInfoList.get(i).getName());
 			}
-			
-			//return "/project/browser";
+			/*List<String> gitBranchList = gitService.getBranchList(creatorName, projectName);
+			gitBranchList.remove(commit);*/
+
+			model.addAttribute("project", project);
+			model.addAttribute("gitFileInfoList", svnFileInfoList);
+
+			model.addAttribute("gitBranchList",null);
+			model.addAttribute("selectBranch",null);
+			//README.md의 파일내용을 불러온다.(현재는 하드코딩)//
+			model.addAttribute("readme","README.md file content view");
+			model.addAttribute("filePath",filePath);
+			model.addAttribute("commit",commit);
+
+			System.out.println("*******************************************************************************");
+			return "/project/browser";
+		}else{ // 파일이라면
+			for(int i=0; i<svnFileInfo.getCommitLogList().size(); i++){
+				System.out.println("file info log: " + svnFileInfo.getName());
+			}
+			model.addAttribute("project", project);
+			model.addAttribute("fileName", svnFileInfo.getName());
+			if(!WebUtil.isCodeName(svnFileInfo.getName()))
+				svnFileInfo.setContent("이 파일은 화면에 표시할 수 없습니다!");
+			if(svnFileInfo.getContent() != null)
+				model.addAttribute("fileContent", new String(svnFileInfo.getContent().getBytes(Charset.forName("EUC-KR")),Charset.forName("CP949")));
+			model.addAttribute("gitLogList", svnFileInfo.getCommitLogList());
+			model.addAttribute("selectCommitIndex", svnFileInfo.getSelectCommitIndex());
+			model.addAttribute("gitCommitLog",svnFileInfo.getSelectCommitLog());
+			model.addAttribute("filePath",filePath);
+			model.addAttribute("isCodeName",WebUtil.isCodeName(filePath));
+			model.addAttribute("isImageName",WebUtil.isImageName(filePath));
+				
+			System.out.println("*******************************************************************************");
+			return "/project/fileViewer";
 		}
+	}
 
 	@RequestMapping("/{creatorName}/{projectName}/edit/commit:{commit}/**")
 	public String fileEdit(HttpServletRequest request,@PathVariable("projectName") String projectName,
@@ -382,6 +380,7 @@ public class ProjectController {
 		return "redirect:/project/"+creatorName+"/"+projectName+"/browser/commit:"+commit+"/filepath:/"+path;
 	}
 
+	//SVN Test Code//
 	@RequestMapping("/{creatorName}/{projectName}/blame/commit:{commit}/**")
 	public String blame(HttpServletRequest request, @PathVariable("projectName") String projectName,
 			@PathVariable("creatorName") String creatorName,
@@ -390,15 +389,19 @@ public class ProjectController {
 		String uri = URLDecoder.decode(request.getRequestURI(),"UTF-8");
 		String filePath = uri.substring(uri.indexOf("filepath:")+9);
 		filePath = filePath.replace(",jsp", ".jsp");
+		
+		System.out.println("*******************************<Project Blame>*********************************");
 
 		if(!WebUtil.isCodeName(filePath)) //소스코드만 추적 가능함.
 			return "redirect:/project/"+creatorName+"/"+projectName+"/browser/commit:"+commit+"/filepath:"+filePath;
 
 		commit = uri.substring(uri.indexOf("/commit:")+8);
 		commit = commit.substring(0, commit.indexOf("/"));		
-		VCFileInfo gitFileInfo = gitService.getFileInfoWithBlame(creatorName, projectName, commit, filePath);
+		
+		System.out.println("commit: " + commit);
+		VCFileInfo svnFileInfo = svnService.getFileInfoWithBlame(creatorName, projectName, commit, filePath);
 
-		if(gitFileInfo==null || gitFileInfo.isDirectory()) // 디렉토리의 경우 blame 기능을 이용할 수 없어 프로젝트 메인으로 돌려보냄.
+		/*if(gitFileInfo==null || gitFileInfo.isDirectory()) // 디렉토리의 경우 blame 기능을 이용할 수 없어 프로젝트 메인으로 돌려보냄.
 			return "redirect:/project/"+creatorName+"/"+projectName;
 
 		model.addAttribute("project", project);
@@ -408,9 +411,12 @@ public class ProjectController {
 		model.addAttribute("gitLogList", gitFileInfo.getCommitLogList());
 		model.addAttribute("gitBlameList", gitFileInfo.getBlames());
 		model.addAttribute("selectCommitIndex", gitFileInfo.getSelectCommitIndex());
-		model.addAttribute("gitCommitLog", gitFileInfo.getSelectCommitLog());
+		model.addAttribute("gitCommitLog", gitFileInfo.getSelectCommitLog());*/
+		
+		System.out.println("*******************************************************************************");
 		return "/project/blame";
 	}
+	//******************//
 
 	@RequestMapping("/{creatorName}/{projectName}/community")
 	public String community(HttpServletRequest request) {
