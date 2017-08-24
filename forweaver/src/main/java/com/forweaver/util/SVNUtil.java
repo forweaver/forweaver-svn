@@ -631,7 +631,7 @@ public class SVNUtil implements VCUtil{
 		System.out.println("end Revesion: " + endRevesion);
 		
 		List<VCBlame> gitBlames = new ArrayList<VCBlame>();
-		Map<String, Object>resultblame = new HashMap<String, Object>();
+		List<Map<String, Object>>blameinfolist = new ArrayList<Map<String, Object>>();
 		
 		SVNRepository repository = null;
 		//블렘을 수행하는 핸들러 호출//
@@ -652,13 +652,22 @@ public class SVNUtil implements VCUtil{
 			
 			logClient.doAnnotate(svnURL, SVNRevision.UNDEFINED, SVNRevision.create(startRevesion), SVNRevision.create(endRevesion), annotationhandler);
 		  
-			Map<String, Object>resultmap = annotationhandler.getResult();
-			resultblame.put("resultval", resultmap);
+			blameinfolist = annotationhandler.getResult();
+			
+			System.out.println("blame info size: " + blameinfolist.size());
+			
+			for(int i=0; i<blameinfolist.size(); i++){
+				gitBlames.add(new VCBlame(
+						blameinfolist.get(i).get("commitID").toString(),
+						blameinfolist.get(i).get("userName").toString(),
+						blameinfolist.get(i).get("userEmail").toString(),
+						blameinfolist.get(i).get("commitTime").toString()));
+			}
+			
+			return gitBlames;
 		} catch (SVNException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
-			resultblame.put("resultval", "0");
 		} catch(Exception e){
 			e.printStackTrace();
 		}

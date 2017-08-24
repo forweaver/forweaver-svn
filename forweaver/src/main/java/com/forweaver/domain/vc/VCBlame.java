@@ -12,10 +12,10 @@ public class VCBlame  implements Serializable {
 
 	static final long serialVersionUID = 12224423434L;
 	
-	private String commitID;
-	private String userName;
-	private String userEmail;
-	private String commitTime;
+	private String commitID; //revStr//
+	private String userName; //authorStr//
+	private String userEmail; //authorStr//
+	private String commitTime; //dateStr//
 	
 	public VCBlame(RevCommit rc) {
 		super();
@@ -24,6 +24,15 @@ public class VCBlame  implements Serializable {
 		this.userEmail = rc.getAuthorIdent().getEmailAddress();
 		this.commitTime = new SimpleDateFormat("yy-MM-dd").format(rc.getAuthorIdent().getWhen());
 	}
+	//SVN Test//
+	public VCBlame(String commitID, String userName, String userEmail, String commitTime) {
+		super();
+		this.commitID = commitID;
+		this.userName = userName;
+		this.userEmail = userEmail;
+		this.commitTime = commitTime;
+	} 
+	////////////
 	public String getCommitID() {
 		return commitID;
 	}

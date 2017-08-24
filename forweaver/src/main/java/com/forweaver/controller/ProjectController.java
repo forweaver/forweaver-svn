@@ -333,6 +333,7 @@ public class ProjectController {
 		}
 	}
 
+	//SVN Test////////////////////
 	@RequestMapping("/{creatorName}/{projectName}/edit/commit:{commit}/**")
 	public String fileEdit(HttpServletRequest request,@PathVariable("projectName") String projectName,
 			@PathVariable("creatorName") String creatorName,
@@ -361,6 +362,7 @@ public class ProjectController {
 
 		return "/project/fileEdit";
 	}
+	//////////////////////////////////
 
 	@RequestMapping(value="/{creatorName}/{projectName}/file-edit",method = RequestMethod.POST )
 	public String fileEdit(@PathVariable("projectName") String projectName,
@@ -401,17 +403,17 @@ public class ProjectController {
 		System.out.println("commit: " + commit);
 		VCFileInfo svnFileInfo = svnService.getFileInfoWithBlame(creatorName, projectName, commit, filePath);
 
-		/*if(gitFileInfo==null || gitFileInfo.isDirectory()) // 디렉토리의 경우 blame 기능을 이용할 수 없어 프로젝트 메인으로 돌려보냄.
+		if(svnFileInfo==null || svnFileInfo.isDirectory()) // 디렉토리의 경우 blame 기능을 이용할 수 없어 프로젝트 메인으로 돌려보냄.
 			return "redirect:/project/"+creatorName+"/"+projectName;
 
 		model.addAttribute("project", project);
-		model.addAttribute("fileName", gitFileInfo.getName());
-		if(gitFileInfo.getContent() != null)
-			model.addAttribute("fileContent", gitFileInfo.getContent());
-		model.addAttribute("gitLogList", gitFileInfo.getCommitLogList());
-		model.addAttribute("gitBlameList", gitFileInfo.getBlames());
-		model.addAttribute("selectCommitIndex", gitFileInfo.getSelectCommitIndex());
-		model.addAttribute("gitCommitLog", gitFileInfo.getSelectCommitLog());*/
+		model.addAttribute("fileName", svnFileInfo.getName());
+		if(svnFileInfo.getContent() != null)
+			model.addAttribute("fileContent", svnFileInfo.getContent());
+		model.addAttribute("gitLogList", svnFileInfo.getCommitLogList());
+		model.addAttribute("gitBlameList", svnFileInfo.getBlames());
+		model.addAttribute("selectCommitIndex", svnFileInfo.getSelectCommitIndex());
+		model.addAttribute("gitCommitLog", svnFileInfo.getSelectCommitLog());
 		
 		System.out.println("*******************************************************************************");
 		return "/project/blame";

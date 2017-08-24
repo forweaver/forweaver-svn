@@ -20,9 +20,8 @@ public class AnnotationHandler implements ISVNAnnotateHandler {
     private boolean myIsVerbose;
     private ISVNOptions myOptions;
     
-    public static int COUNT = 0;
-    public static Map<String, Object> result;
-    private static List<Object>blameinfolist;
+    public Map<String, Object> result;
+    private List<Map<String, Object>>blameinfolist;
     
 	public void setMyIsUseMergeHistory(boolean myIsUseMergeHistory) {
 		this.myIsUseMergeHistory = myIsUseMergeHistory;
@@ -42,16 +41,13 @@ public class AnnotationHandler implements ISVNAnnotateHandler {
 		this.myOptions = myOptions;
 		
 		result = new HashMap<String, Object>();
-    	blameinfolist = new ArrayList<Object>();
+    	blameinfolist = new ArrayList<Map<String, Object>>();
     	
     	System.out.println("data init");
 	}
 	
-	public Map<String, Object> getResult() {
-		result.put("blamelist", blameinfolist);
-		COUNT = 0;
-		
-		return result;
+	public List<Map<String, Object>> getResult() {
+		return this.blameinfolist;
 	}
 
 	/**
@@ -84,11 +80,17 @@ public class AnnotationHandler implements ISVNAnnotateHandler {
         String revStr = revision >= 0 ? SVNFormatUtil.formatString(Long.toString(revision), 6, false) : "     -";
         String authorStr = author != null ? SVNFormatUtil.formatString(author, 10, false) : "         -";
         
+        result.put("userName", authorStr);
+        result.put("userEmail", authorStr);
+        result.put("commitID", revStr);
+        
         if (myIsVerbose) {
             String dateStr = "                                           -"; 
             if (date != null) {
                 dateStr = SVNDate.formatHumanDate(date, myOptions);
             }
+            
+            result.put("commitTime", dateStr);
 
             totalcontent += mergedStr + revStr + " " + authorStr + " " + dateStr + " ";
             //System.out.print(mergedStr + revStr + " " + authorStr + " " + dateStr + " ");
@@ -108,10 +110,7 @@ public class AnnotationHandler implements ISVNAnnotateHandler {
         
         System.out.println("info: " + totalcontent);
         
-        blameinfolist.add(totalcontent);
-        result.put("count", ""+COUNT);
-        
-        COUNT++;
+        blameinfolist.add(result);
     }
 
     public boolean handleRevision(Date date, long revision, String author, File contents) throws SVNException {
