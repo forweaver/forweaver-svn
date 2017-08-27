@@ -44,6 +44,7 @@
 </li>
 <li>log diff</li>
 <li>blame</li>
+<li>file download</li>
 </div>
 <div>
 <h2><label># Issue, Milestone</label></h2>
