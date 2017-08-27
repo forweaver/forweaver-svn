@@ -87,7 +87,11 @@ public class AnnotationHandler implements ISVNAnnotateHandler {
         if (myIsVerbose) {
             String dateStr = "                                           -"; 
             if (date != null) {
-                dateStr = SVNDate.formatHumanDate(date, myOptions);
+                dateStr = SVNDate.formatRFC1123Date(date);
+                //냔,월,일 만 가져올 수 있도록 파싱//
+                
+                
+                System.out.println("date human: " + dateStr);
             }
             
             result.put("commitTime", dateStr);
