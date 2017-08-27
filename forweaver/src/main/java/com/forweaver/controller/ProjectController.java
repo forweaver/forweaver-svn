@@ -345,8 +345,8 @@ public class ProjectController {
 		commit = uri.substring(uri.indexOf("/commit:") + 8);
 		commit = commit.substring(0, commit.indexOf("/"));
 
-		VCFileInfo gitFileInfo = gitService.getFileInfo(creatorName, projectName, commit, filePath);
-		model.addAttribute("project", project);
+		//VCFileInfo gitFileInfo = gitService.getFileInfo(creatorName, projectName, commit, filePath);
+		/*model.addAttribute("project", project);
 		model.addAttribute("fileName", gitFileInfo.getName());
 		if (gitFileInfo.getContent() != null)
 			model.addAttribute("fileContent",
@@ -355,7 +355,7 @@ public class ProjectController {
 		model.addAttribute("selectCommitIndex", gitFileInfo.getSelectCommitIndex());
 		model.addAttribute("gitCommitLog", gitFileInfo.getSelectCommitLog());
 		model.addAttribute("filePath", filePath);
-		model.addAttribute("commit", commit);
+		model.addAttribute("commit", commit);*/
 
 		return "/project/fileEdit";
 	}

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.springframework.stereotype.Component;
 import org.tmatesoft.svn.core.SVNException;
@@ -85,12 +86,23 @@ public class AnnotationHandler implements ISVNAnnotateHandler {
         result.put("commitID", revStr);
         
         if (myIsVerbose) {
-            String dateStr = "                                           -"; 
+            String dateStr = ""; 
             if (date != null) {
-                dateStr = SVNDate.formatRFC1123Date(date);
+                String tempDate = SVNDate.formatRFC1123Date(date);
+                int i=0;
                 //냔,월,일 만 가져올 수 있도록 파싱//
+                StringTokenizer tokenizer = new StringTokenizer(tempDate, " ");
                 
-                
+                while(tokenizer.hasMoreTokens()) { 
+                	String str = tokenizer.nextToken();
+                	
+                	if(i == 1 || i == 2 || i ==3){
+                		dateStr += str + " ";
+                	} 
+                	
+                	i++;
+                }
+
                 System.out.println("date human: " + dateStr);
             }
             
