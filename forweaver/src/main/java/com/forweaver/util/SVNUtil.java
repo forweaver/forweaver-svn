@@ -1,12 +1,12 @@
 package com.forweaver.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +14,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
-import org.gitective.core.BlobUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
@@ -26,14 +24,14 @@ import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNProperty;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.io.ISVNEditor;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.io.diff.SVNDeltaGenerator;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNDiffClient;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import com.forweaver.domain.Project;
 import com.forweaver.domain.vc.VCBlame;
@@ -675,4 +673,64 @@ public class SVNUtil implements VCUtil{
 		return null;
 	}
 
+	/** 파일을 수정 시 commit까지 바로 진행
+	 * @param name
+	 * @param email
+	 * @param branchName
+	 * @param message
+	 * @param zip
+	 */
+	public void updateFile(String name,String email,String branchName,String message,String path,String code){
+		System.out.println("-> name: " + name);
+		System.out.println("-> email: " + email);
+		System.out.println("-> message: " + message);
+		System.out.println("-> path: " + path);
+		System.out.println("-> code: " + code);
+		
+		//SVN modify commit//
+		SVNRepository repository = null;
+		
+		try {
+			repository = this.getRepository(); //저장소를 불러온다.//
+			
+			byte[] oldcontents = code.getBytes();
+			byte[] updatecontents = code.getBytes();
+			
+			SVNNodeKind nodeKind = repository.checkPath("", -1);
+			System.out.println("-> status: " + nodeKind);
+			
+			long latestRevision = repository.getLatestRevision();
+	        System.out.println("Repository latest revision (before committing): " + latestRevision);
+	        
+	        ISVNEditor editor = repository.getCommitEditor(message, null);
+	        
+	        System.out.println("midify path: " + path);
+	        SVNCommitInfo commitInfo = modifyFile(editor, path, path, oldcontents, updatecontents);
+	        System.out.println("The file was changed: " + commitInfo);
+	        
+	        //수정되었는지 확인//
+	        if(commitInfo != null){
+	        	System.out.println("==> edit result: success...");
+	        } else if(commitInfo == null){
+	        	System.out.println("==> edit result: fail...");
+	        }
+		} catch(SVNException e){
+			e.printStackTrace();
+		}
+	}
+	
+	private static SVNCommitInfo modifyFile(ISVNEditor editor, String dirPath, String filePath, byte[] oldData, byte[] newData) throws SVNException {
+        editor.openRoot(-1);
+        editor.openDir(dirPath, -1);
+        editor.openFile(filePath, -1);
+        editor.applyTextDelta(filePath, null);
+        
+        SVNDeltaGenerator deltaGenerator = new SVNDeltaGenerator();
+        String checksum = deltaGenerator.sendDelta(filePath, new ByteArrayInputStream(oldData), 0, new ByteArrayInputStream(newData), editor, true);
+
+        editor.closeFile(filePath, checksum);
+        editor.closeDir();
+
+        return editor.closeEdit();
+    }
 }

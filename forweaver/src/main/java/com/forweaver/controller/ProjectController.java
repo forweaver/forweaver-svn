@@ -270,7 +270,7 @@ public class ProjectController {
 		commit = commit.substring(0, commit.indexOf("/"));
 
 		// 프로젝트 path초기화//
-		svnUtil.Init(project);
+		//svnUtil.Init(project);
 
 		// 파일의 리스트 정보를 불러온다.//
 		VCFileInfo svnFileInfo = svnService.getFileInfo(creatorName, projectName, commit, filePath);
@@ -345,39 +345,50 @@ public class ProjectController {
 		commit = uri.substring(uri.indexOf("/commit:") + 8);
 		commit = commit.substring(0, commit.indexOf("/"));
 
-		//VCFileInfo gitFileInfo = gitService.getFileInfo(creatorName, projectName, commit, filePath);
-		/*model.addAttribute("project", project);
-		model.addAttribute("fileName", gitFileInfo.getName());
-		if (gitFileInfo.getContent() != null)
+		VCFileInfo svnFileInfo = svnService.getFileInfo(creatorName, projectName, commit, filePath);
+		
+		model.addAttribute("project", project);
+		model.addAttribute("fileName", svnFileInfo.getName());
+		if (svnFileInfo.getContent() != null)
 			model.addAttribute("fileContent",
-					new String(gitFileInfo.getContent().getBytes(Charset.forName("EUC-KR")), Charset.forName("CP949")));
-		model.addAttribute("gitLogList", gitFileInfo.getCommitLogList());
-		model.addAttribute("selectCommitIndex", gitFileInfo.getSelectCommitIndex());
-		model.addAttribute("gitCommitLog", gitFileInfo.getSelectCommitLog());
+					new String(svnFileInfo.getContent().getBytes(Charset.forName("EUC-KR")), Charset.forName("CP949")));
+		model.addAttribute("gitLogList", svnFileInfo.getCommitLogList());
+		model.addAttribute("selectCommitIndex", svnFileInfo.getSelectCommitIndex());
+		model.addAttribute("gitCommitLog", svnFileInfo.getSelectCommitLog());
 		model.addAttribute("filePath", filePath);
-		model.addAttribute("commit", commit);*/
+		model.addAttribute("commit", commit);
 
 		return "/project/fileEdit";
 	}
 	//////////////////////////////////
-
+	//************** SVN Test Code ******************//
 	@RequestMapping(value = "/{creatorName}/{projectName}/file-edit", method = RequestMethod.POST)
 	public String fileEdit(@PathVariable("projectName") String projectName,
 			@PathVariable("creatorName") String creatorName, @RequestParam("commit") String commit,
 			@RequestParam("message") String message, @RequestParam("path") String path,
 			@RequestParam("code") String code, Model model) {
+		System.out.println("************* edit *************");
+	
 		Project project = projectService.get(creatorName + "/" + projectName);
 		Weaver currentWeaver = weaverService.getCurrentWeaver();
 
-		if (!projectService.updateFile(project, currentWeaver, commit, message, path, code)) {
+		//출력//
+		if (!projectService.updateFileSVN(project, currentWeaver, commit, message, path, code)) {
+			System.out.println("update fail");
+			
 			model.addAttribute("say", "업로드 실패! 프로젝트에 가입되어 있는지 혹은 최신 커밋의 파일인지 확인해보세요!");
-			model.addAttribute("url",
-					"/project/" + creatorName + "/" + projectName + "/edit/commit:" + commit + "/filepath:/" + path);
+			model.addAttribute("url", "/project/" + creatorName + "/" + projectName + "/edit/commit:" + commit + "/filepath:/" + path);
+			System.out.println("********************************");
+			
 			return "/alert";
 		}
+		
+		System.out.println("********************************");
+		
 		return "redirect:/project/" + creatorName + "/" + projectName + "/browser/commit:" + commit + "/filepath:/"
 				+ path;
 	}
+	//************************************************//
 
 	// SVN Test Code//
 	@RequestMapping("/{creatorName}/{projectName}/blame/commit:{commit}/**")

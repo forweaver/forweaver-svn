@@ -5,14 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.io.SVNRepository;
-import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-
-import com.forweaver.domain.Weaver;
 import com.forweaver.domain.git.statistics.GitParentStatistics;
 import com.forweaver.domain.vc.VCCommitLog;
 import com.forweaver.domain.vc.VCFileInfo;

@@ -315,6 +315,21 @@ public class ProjectService{
 
 		return true;
 	}
+	
+	
+	//************ SVN Test ******************//
+	public boolean updateFileSVN(Project project,Weaver weaver,String branchName,String message,String path,String code){
+		//파일을 수정할 수 있는 예외상황이 아닌 경우//
+		if(message==null || message.length() < 5 ||weaver  == null || weaver.getPass(project.getName()) == null)
+			return false;
+
+		//gitUtil.Init(project);
+		svnUtil.Init(project);
+		svnUtil.updateFile(weaver.getId(), weaver.getEmail(), branchName, message, path, code);
+
+		return true;
+	}
+	//****************************************//
 
 	// 프로젝트 초기화
 	public boolean reSetRepository(Project project,Weaver weaver){
